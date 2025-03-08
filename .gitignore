@@ -302,4 +302,7 @@ pip-selfcheck.json
 .history
 .ionide
 
+#for nafees private testing
+# testing_private/
+
 # End of https://www.toptal.com/developers/gitignore/api/django,visualstudiocode,venv,python

@@ -1,0 +1,14 @@
+[
+  {
+    "slot_id": 1,
+    "task_name": "Project Deadline",
+    "start_time": "2025-03-12T08:00:00",
+    "end_time": "2025-03-12T12:00:00"
+  },
+  {
+    "slot_id": 2,
+    "task_name": "Lunch",
+    "start_time": "2025-03-12T12:30:00",
+    "end_time": "2025-03-12T13:30:00"
+  }
+]
