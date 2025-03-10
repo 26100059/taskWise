@@ -27,6 +27,12 @@ const MainPage = () => {
         >
           Dashboard
         </button>
+        <button 
+          onClick={() => navigate('/testingDB')}
+          className="btn testing-btn"
+        >
+          Test DB
+        </button>
       </div>
     </div>
   );
