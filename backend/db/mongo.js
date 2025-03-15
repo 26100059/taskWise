@@ -6,10 +6,7 @@ const uri = process.env.MONGO_URI || "mongodb+srv://taskWiseDB:taskWiseAdmin@tas
 
 const connectToDatabase = async () => {
   try {
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    await mongoose.connect(uri);
     console.log("Connected to MongoDB Atlas using Mongoose");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
