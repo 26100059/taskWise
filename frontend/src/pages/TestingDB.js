@@ -59,6 +59,34 @@ const TestingDB = () => {
     }
   };
 
+  const [protectedData, setProtectedData] = useState(null);
+  const fetchProtectedData = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("You need to log in first!");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/protected`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setProtectedData(data);
+      } else {
+        alert(data.error || "Failed to fetch protected data.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  
+
   /* ----- TASKS STATE & HANDLERS ----- */
   const [tasks, setTasks] = useState([]);
   const [taskForm, setTaskForm] = useState({ user_id: '', task_name: '', duration: 0, deadline: '', status: 'pending' });
@@ -425,6 +453,21 @@ const TestingDB = () => {
           ))}
         </ul>
       </section>
+
+      {/* PROTECTED DATA SECTION */}
+      <section>
+        <h2>Protected Data</h2>
+        <button onClick={fetchProtectedData}>Fetch Protected Data</button>
+        {protectedData && (
+          <div>
+            <h3>Protected Data Response:</h3>
+            <pre>{JSON.stringify(protectedData, null, 2)}</pre>
+          </div>
+        )}
+      </section>
+
+
+
     </div>
   );
 };
