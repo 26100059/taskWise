@@ -1,62 +1,185 @@
-/* MainPage.css */
-.main-container {
-    min-height: 100vh;
-    display: flex;
+:root {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --text-color: #333;
+  --light-gray: #f3f4f6;
+  --medium-gray: #9ca3af;
+  --dark-gray: #4b5563;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+}
+
+/* Container for the whole page */
+.task-wise-container {
+  min-height: 100vh;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Full-width content container that centers vertically */
+.content-container {
+  flex: 1;
+  width: 100%;
+  padding: 2rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Main content holds the two sections */
+.main-content {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* LEFT SECTION: Calendar Image */
+.left-section {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-box {
+  width: 90%;
+  max-width: 600px;
+}
+
+.calendar-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* RIGHT SECTION: Branding & Buttons */
+.right-section {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.logo-box {
+  width: 3rem;
+  height: 5rem;
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--medium-gray);
+}
+
+.logo-image {
+  width: 18rem;
+  height: 8rem;
+}
+
+.brand-name {
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: black;
+}
+
+.tagline {
+  font-size: 1.125rem;
+  color: var(--dark-gray);
+  letter-spacing: 0.025em;
+  margin-bottom: 1rem;
+  text-align: left;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.btn {
+  padding: 0.75rem 2rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.signup-btn,
+.signin-btn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.signup-btn:hover,
+.signin-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Footer styling */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--light-gray);
+}
+
+.copyright {
+  font-size: 0.75rem;
+  color: var(--medium-gray);
+  letter-spacing: 0.05em;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .main-content {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #f2f2f2;
-    margin: 0;
-    padding: 0;
   }
-  
-  .main-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 40px;
+
+  /* Hide the calendar section on mobile */
+  .left-section {
+    display: none;
   }
-  
+
   .button-group {
-    display: flex;
-    gap: 15px;
+    flex-direction: column;
   }
-  
+
+  /* Reduce button padding on mobile */
   .btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    padding: 0.5rem 1.5rem;
+    /* width: 75%; */
   }
-  
-  /* Specific button styles */
-  .signup-btn {
-    background-color: #3498db;
-    color: #fff;
+
+  .content-container {
+    flex: 1 1;
+    width: 100%;
+    padding: 10rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
   }
-  
-  .signup-btn:hover {
-    background-color: #2980b9;
-  }
-  
-  .signin-btn {
-    background-color: #2ecc71;
-    color: #fff;
-  }
-  
-  .signin-btn:hover {
-    background-color: #27ae60;
-  }
-  
-  .dashboard-btn {
-    background-color: #9b59b6;
-    color: #fff;
-  }
-  
-  .dashboard-btn:hover {
-    background-color: #8e44ad;
-  }
-  
-  /*Testing github repo*/
+}
