@@ -1,0 +1,142 @@
+File: src/styles/signInPage.css
+/* signUpPage.css */
+
+/* Import a font from Google Fonts (optional) */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap");
+
+
+
+/* Reset / Box-Sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Basic Styling for body if needed */
+  body {
+    font-family: "Arial", sans-serif;
+    color: #333;
+  }
+  
+  /* Container for the two-column layout */
+  .container {
+    display: flex;
+    height: 100vh; /* Full viewport height */
+  }
+  /*  */
+  /* #2c9ed2 */
+  /* Left Section */
+  .left-section {
+    flex: 2;
+    background: #2F2F2F;
+    display: flex;
+    flex-direction: column;
+    align-items: center;        /* still horizontally centered */
+    justify-content: flex-start; /* push content to the top */
+    padding-top: 40px;          /* adjust as needed for spacing from the top */
+  }
+  
+  
+  /* Logo or Branding */
+  .logo-wrapper {
+    text-align: center;
+    color: #ffffff;
+  }
+
+  /* signUpPage.css */
+  .logo-image {
+    width: 600px;       /* adjust to your liking */
+    height: 7 px;      /* keeps aspect ratio */
+    /* margin-bottom: -2000 px; */
+    /* Optional: If you want a border or anything else, add it here */
+  }
+
+  
+  .logo-text {
+    font-size: 36px;
+    letter-spacing: 2px;
+    /* margin-bottom: -2000 px;     */
+  }
+  
+  /* Right Section */
+  .right-section {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Form Wrapper */
+  .form-wrapper {
+    width: 80%;
+    max-width: 350px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  
+  .form-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .signup-prompt {
+    margin-bottom: 20px;
+  }
+  
+  .signup-prompt a {
+    color: #2c9ed2;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  button[type="submit"] {
+    width: 100%;
+    background: #2c9ed2;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  button[type="submit"] .arrow {
+    margin-left: 8px;
+    font-weight: bold;
+    transition: margin-left 0.2s;
+  }
+  
+  button[type="submit"]:hover .arrow {
+    margin-left: 12px;
+  }
+  
+  /* Optional footer styling if you have a footer in this component/page */
+  footer {
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    background: #f7f7f7;
+    color: #777;
+  }
+  
