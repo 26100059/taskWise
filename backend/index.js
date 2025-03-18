@@ -12,6 +12,10 @@ app.get("/", (req, res) => {
 
 app.use('/testingDB', require('./routes/testingDB'));
 
+const profileRoutes = require('./routes/profilePage');
+app.use('/api/profile', profileRoutes);
+
+
 connectToDatabase()
   .then(() => {
     const PORT = process.env.PORT || 7000;
