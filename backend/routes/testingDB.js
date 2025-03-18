@@ -1,6 +1,8 @@
 // backend/routes/testingDB.js
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 // Import models
 const User = require('../models/User');
@@ -227,6 +229,131 @@ router.delete('/userprofilestats/:id', async (req, res) => {
   } catch(error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// // Register a new user
+// router.post('/usersregister', async (req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
+
+//     // Check if username or email already exists
+//     const existingUser = await User.findOne({ $or: [{ name }, { email }] });
+//     if (existingUser) {
+//       return res.status(400).json({ error: "Username or email is already in use" });
+//     }
+
+//     // Hash the password
+//     const saltRounds = 10;
+//     const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+//     // Create new user with hashed password
+//     const user = new User({ name, email, password: hashedPassword });
+//     await user.save();
+
+//     res.status(201).json({ message: "User registered successfully", userId: user._id });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+
+
+// // Login an existing user
+// router.post('/userslogin', async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     // Check if the email exists
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       return res.status(400).json({ error: "Incorrect email" });
+//     }
+
+//     // Compare the hashed password
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       return res.status(400).json({ error: "Incorrect password" });
+//     }
+
+//     // Successful login
+//     res.json({ message: "Login successful", userId: user._id });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+
+
+// module.exports = router;
+
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key'; // Replace with a strong secret key
+
+// Middleware to authenticate tokens
+const authenticateToken = (req, res, next) => {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(401).json({ error: "Access denied, token missing" });
+
+  jwt.verify(token.split(" ")[1], JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: "Invalid token" });
+
+    req.user = user; // Attach user payload to request
+    next();
+  });
+};
+
+// Register a new user
+router.post('/usersregister', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ $or: [{ name }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({ error: "Username or email is already in use" });
+    }
+
+    // Hash password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Save new user
+    const user = new User({ name, email, password: hashedPassword });
+    await user.save();
+
+    res.status(201).json({ message: "User registered successfully", userId: user._id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Login user and generate token
+router.post('/userslogin', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ error: "Incorrect email" });
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Incorrect password" });
+    }
+
+    // Generate JWT
+    const token = jwt.sign({ userId: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ message: "Login successful", token, userId: user._id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Example protected route
+router.get('/protected', authenticateToken, (req, res) => {
+  res.json({ message: `Hello, ${req.user.email}! This is a protected route. You have access to it` });
 });
 
 module.exports = router;
