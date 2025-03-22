@@ -20,7 +20,7 @@ body {
 }
 
 /* Container for the whole page */
-.task-wise-container {
+.mainPage-container {
   min-height: 100vh;
   background-color: white;
   display: flex;
@@ -28,7 +28,7 @@ body {
 }
 
 /* Full-width content container that centers vertically */
-.content-container {
+.mainPage-content-container {
   flex: 1;
   width: 100%;
   padding: 2rem 1rem;
@@ -38,7 +38,7 @@ body {
 }
 
 /* Main content holds the two sections */
-.main-content {
+.mainPage-main-content {
   display: flex;
   gap: 2rem;
   width: 100%;
@@ -46,26 +46,26 @@ body {
 }
 
 /* LEFT SECTION: Calendar Image */
-.left-section {
+.mainPage-left-section {
   flex: 2;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.image-box {
+.mainPage-image-box {
   width: 90%;
   max-width: 600px;
 }
 
-.calendar-image {
+.mainPage-calendar-image {
   width: 100%;
   height: auto;
   display: block;
 }
 
 /* RIGHT SECTION: Branding & Buttons */
-.right-section {
+.mainPage-right-section {
   flex: 1.5;
   display: flex;
   flex-direction: column;
@@ -73,12 +73,12 @@ body {
   padding: 1rem;
 }
 
-.header {
+.mainPage-header {
   display: flex;
   align-items: center;
 }
 
-.logo-box {
+.mainPage-logo-box {
   width: 3rem;
   height: 5rem;
   margin-right: 1rem;
@@ -89,19 +89,19 @@ body {
   color: var(--medium-gray);
 }
 
-.logo-image {
+.mainPage-logo-image {
   width: 18rem;
   height: 8rem;
 }
 
-.brand-name {
+.mainPage-brand-name {
   font-size: 2.8rem;
   font-weight: 900;
   letter-spacing: 0.05em;
   color: black;
 }
 
-.tagline {
+.mainPage-tagline {
   font-size: 1.125rem;
   color: var(--dark-gray);
   letter-spacing: 0.025em;
@@ -113,14 +113,14 @@ body {
   text-overflow: ellipsis;
 }
 
-.button-group {
+.mainPage-button-group {
   display: flex;
   gap: 1rem;
   justify-content: flex-start;
   width: 100%;
 }
 
-.btn {
+.mainPage-btn {
   padding: 0.75rem 2rem;
   font-weight: 500;
   border: none;
@@ -129,25 +129,25 @@ body {
   transition: background-color 0.2s;
 }
 
-.signup-btn,
-.signin-btn {
+.mainPage-signup-btn,
+.mainPage-signin-btn {
   background-color: var(--primary-color);
   color: white;
 }
 
-.signup-btn:hover,
-.signin-btn:hover {
+.mainPage-signup-btn:hover,
+.mainPage-signin-btn:hover {
   background-color: var(--primary-hover);
 }
 
 /* Footer styling */
-.footer {
+.mainPage-footer {
   text-align: center;
   padding: 1rem;
   background-color: var(--light-gray);
 }
 
-.copyright {
+.mainPage-copyright {
   font-size: 0.75rem;
   color: var(--medium-gray);
   letter-spacing: 0.05em;
@@ -155,26 +155,25 @@ body {
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .main-content {
+  .mainPage-main-content {
     flex-direction: column;
   }
-
+  
   /* Hide the calendar section on mobile */
-  .left-section {
+  .mainPage-left-section {
     display: none;
   }
-
-  .button-group {
+  
+  .mainPage-button-group {
     flex-direction: column;
   }
-
+  
   /* Reduce button padding on mobile */
-  .btn {
+  .mainPage-btn {
     padding: 0.5rem 1.5rem;
-    /* width: 75%; */
   }
-
-  .content-container {
+  
+  .mainPage-content-container {
     flex: 1 1;
     width: 100%;
     padding: 10rem 1rem;

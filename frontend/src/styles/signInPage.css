@@ -1,0 +1,185 @@
+/* File: src/styles/signInPage.css */
+
+/* Import a font from Google Fonts (optional) */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap");
+
+/* Root variables */
+:root {
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --text-color: #333;
+    --light-gray: #f3f4f6;
+    --medium-gray: #9ca3af;
+    --dark-gray: #4b5563;
+}
+
+/* Reset / Box-Sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Basic styling for body */
+body {
+    font-family: "Arial", sans-serif;
+    color: var(--text-color);
+}
+
+/* Container for the page: vertical stack of main content and footer */
+.signIn-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Main content area: split horizontally (50/50) */
+.signIn-main-content {
+    flex: 1;
+    display: flex;
+}
+
+/* Left Section: Branding */
+.signIn-left-section {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* Brand Image styling */
+.signIn-brand-image {
+    width: 80%;
+    max-width: 600px;
+    height: auto;
+    position: relative;
+    left: 2rem;
+}
+
+/* Right Section: Sign In Form container wrapper */
+.signIn-right-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Form Container: small container with light-gray background */
+.signIn-form-container {
+    width: 80%;
+    max-width: 350px;
+    background: var(--light-gray);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+/* Form Title */
+.signIn-form-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+/* Redirection prompt (using same classes as Sign Up page) */
+.signUp-signin-prompt {
+    margin-bottom: 20px;
+}
+
+.signUp-signin-prompt a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Error and Success messages */
+.signIn-error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.signIn-success {
+    color: green;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Label styling */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+/* Input fields styling */
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Submit Button styling */
+#signInBtn {
+    width: 100%;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#signInBtn .signIn-arrow {
+    margin-left: 8px;
+    font-weight: bold;
+    transition: margin-left 0.2s;
+}
+
+#signInBtn:hover .signIn-arrow {
+    margin-left: 12px;
+}
+
+/* Footer styling (same as main page) */
+.signIn-footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: var(--light-gray);
+}
+
+.signIn-copyright {
+    font-size: 0.75rem;
+    color: var(--medium-gray);
+    letter-spacing: 0.05em;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .signIn-main-content {
+        flex-direction: column;
+    }
+  
+    /* Hide the left section on mobile */
+    .signIn-left-section {
+        display: none;
+    }
+  
+    .signIn-right-section {
+        padding: 1rem;
+    }
+}
