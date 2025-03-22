@@ -1,0 +1,117 @@
+/* src/styles/profilePage.css */
+:root {
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --text-color: #333;
+    --light-gray: #f3f4f6;
+    --medium-gray: #9ca3af;
+    --dark-gray: #4b5563;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+  }
+  
+  /* Container for the profile page */
+  .profilePage-container {
+    background-color: white;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Profile header with light grey background */
+  .profilePage-header {
+    background-color: var(--light-gray);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .profilePage-user-name h2 {
+    font-size: 2rem;
+    margin: 0;
+  }
+  
+  .profilePage-user-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .profilePage-level-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .profilePage-xp-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .profilePage-xp-bar {
+    width: 200px;
+  }
+  
+  .profilePage-xp-text {
+    font-size: 1rem;
+    color: var(--dark-gray);
+  }
+  
+  /* Productivity analytics section with light grey background */
+  .profilePage-productivity-analytics {
+    background-color: var(--light-gray);
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  /* Container for all graphs */
+  .profilePage-graphs-container {
+    display: flex;
+    gap: 2rem;
+  }
+  
+  /* Left graph (weekly trend) is 2x wider than right graphs */
+  .profilePage-left-graph {
+    flex: 2;
+  }
+  
+  /* Right graphs: stacked vertically */
+  .profilePage-right-graphs {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  /* Right-side graph items constrained in height */
+  .profilePage-graph-item {
+    flex: 1;
+    max-height: 300px;
+  }
+  
+  /* Center align the gauge chart */
+  .profilePage-gauge-chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .profilePage-gauge-label {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: var(--dark-gray);
+  }
+  
