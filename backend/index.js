@@ -12,6 +12,10 @@ app.get("/", (req, res) => {
 
 app.use('/testingDB', require('./routes/testingDB'));
 
+// Mount task routes at `/api/tasks`
+app.use("/api/tasks", require("./routes/tasks"));
+
+
 connectToDatabase()
   .then(() => {
     const PORT = process.env.PORT || 7000;
