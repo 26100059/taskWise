@@ -1,41 +1,42 @@
-import React from 'react';
-import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
-import axios from "axios";
+// src/pages/Dashboard.js
+import React, { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction"; // Import interaction plugin
-
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import Switch from "react-switch";
+import axios from "axios";
+import "../styles/dashboard.css";
 
 const DashboardPage = () => {
   const navigate = useNavigate();
+  const calendarRef = useRef(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/signin');
-  };
+  // Dark mode state
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // State for input form
-  const [userId, setUserId] = useState("");
-  const [taskName, setTaskName] = useState("");
-  const [duration, setDuration] = useState("");
-  const [deadline, setDeadline] = useState("");
+  // Task form state
+  const [taskInput, setTaskInput] = useState({
+    name: "",
+    deadline: "",
+    duration: "",
+    info: "",
+  });
 
-  // State to store time slots
+  // Time slots state for calendar events
   const [timeSlots, setTimeSlots] = useState([]);
 
-  // Fetch time slots from the backend
+  // Fetch time slots from the backend using axios
   const fetchTimeSlots = async () => {
     try {
-      const res = await axios.get("http://localhost:7000/api/tasks/timeSlots"); // Corrected endpoint
+      const res = await axios.get("http://localhost:7000/api/tasks/timeSlots");
       const formattedSlots = res.data.map((slot) => ({
         id: slot._id,
-        title: slot.task_id?.task_name || "No Task Name", // Display task name if available
+        title: slot.task_id?.task_name || "No Task Name",
         start: slot.start_time,
-        end: slot.end_time, // Ensures proper scheduling
-        extendedProps: {
-          taskId: slot.task_id?._id, // Store task ID
-        },
+        end: slot.end_time,
+        extendedProps: { taskId: slot.task_id?._id },
       }));
       setTimeSlots(formattedSlots);
     } catch (error) {
@@ -43,34 +44,20 @@ const DashboardPage = () => {
     }
   };
 
-  // Handle task creation. Note: When task is created, its timeslots must be generated
-  //Using llm api because only time slots are shown on the calendar.
-  const handleCreateTask = async (e) => {
+  useEffect(() => {
+    fetchTimeSlots();
+  }, []);
+
+  // Handle task form submission
+  const handleTaskSubmit = (e) => {
     e.preventDefault();
-    try {
-      const newTask = {
-        user_id: userId, // User manually inputs user_id
-        task_name: taskName,
-        duration: Number(duration),
-        deadline: new Date(deadline),
-      };
-
-      await axios.post("http://localhost:7000/api/tasks", newTask);
-
-      alert("Task added successfully!");
-      setTaskName("");
-      setDuration("");
-      setDeadline("");
-      setUserId("");
-
-      fetchTimeSlots(); // Refresh time slots -> automatically saves new state as well.
-    } catch (error) {
-      console.error("Error creating task:", error);
-      alert("Failed to create task.");
-    }
+    if (!taskInput.name || !taskInput.deadline || !taskInput.duration) return;
+    alert("Task added:\n" + JSON.stringify(taskInput, null, 2));
+    setTaskInput({ name: "", deadline: "", duration: "", info: "" });
+    fetchTimeSlots();
   };
 
-  // Handle event drop (drag-and-drop update)
+  // Handle event drop (drag & drop update)
   const handleEventDrop = async (eventDropInfo) => {
     const { event } = eventDropInfo;
     const updatedStart = event.start.toISOString();
@@ -81,116 +68,133 @@ const DashboardPage = () => {
         start_time: updatedStart,
         end_time: updatedEnd,
       });
-
-      fetchTimeSlots(); // Refresh time slots -> automatically saves new state as well.
+      fetchTimeSlots();
     } catch (error) {
       console.error("Error updating time slot:", error);
     }
   };
 
+  // Dark mode effect
   useEffect(() => {
-    fetchTimeSlots();
-  }, []);
+    document.body.classList.toggle("dark-mode", isDarkMode);
+  }, [isDarkMode]);
+
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/signin");
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
+    <div className={`dashboard ${isDarkMode ? "dark-mode" : ""}`}>
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="brand">Task Wise</div>
+        <div className="nav-buttons">
+          <button className="export-btn">Export to Google Calendar</button>
+          <Switch
+            onChange={setIsDarkMode}
+            checked={isDarkMode}
+            offColor="#ccc"
+            onColor="#3b82f6"
+            uncheckedIcon={false}
+            checkedIcon={false}
+            height={22}
+            width={44}
+            handleDiameter={18}
+          />
+          <button className="nav-btn" onClick={() => navigate("/profile")}>
+            Profile
+          </button>
+          <button className="nav-btn logout" onClick={handleLogout}>
+            Log out
+          </button>
+        </div>
+      </nav>
 
-      {/* Navigation Buttons */}
+      {/* Main Content */}
+      <div className="main-container">
+        {/* Calendar Section */}
+        <div className="calendar-section">
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            headerToolbar={{
+              left: "prev,next today",
+              center: "title",
+              right: "dayGridMonth,timeGridWeek,timeGridDay",
+            }}
+            initialView="dayGridMonth"
+            editable={true}
+            droppable={true}
+            minTime="08:00:00"
+            maxTime="18:00:00"
+            height="100%"
+            contentHeight="100%"
+            eventDrop={handleEventDrop}
+            events={timeSlots}
+          />
+        </div>
 
-      <button
-        onClick={() => navigate('/profile')}
-        className="px-6 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 mb-4"
-      >
-        Go to Profile
-      </button>
+        {/* Side Panel */}
+        <div className="side-panel">
+          {/* Add Task Form */}
+          <div className="add-task">
+            <form onSubmit={handleTaskSubmit}>
+              <label>Task Name:</label>
+              <input
+                type="text"
+                value={taskInput.name}
+                onChange={(e) =>
+                  setTaskInput({ ...taskInput, name: e.target.value })
+                }
+                required
+              />
+              <label>Deadline:</label>
+              <input
+                type="datetime-local"
+                value={taskInput.deadline}
+                onChange={(e) =>
+                  setTaskInput({ ...taskInput, deadline: e.target.value })
+                }
+                required
+              />
+              <label>Duration (hours):</label>
+              <input
+                type="number"
+                min="1"
+                value={taskInput.duration}
+                onChange={(e) =>
+                  setTaskInput({ ...taskInput, duration: e.target.value })
+                }
+                required
+              />
+              <label>Additional Info (Optional):</label>
+              <textarea
+                value={taskInput.info}
+                onChange={(e) =>
+                  setTaskInput({ ...taskInput, info: e.target.value })
+                }
+              ></textarea>
+              <button type="submit" className="add-btn">
+                Add Task
+              </button>
+            </form>
+          </div>
 
-      <button
-        onClick={() => navigate('/')}
-        className="text-blue-500 hover:underline"
-      >
-        Back to Home
-      </button>
-
-      <button
-        onClick={() => navigate('/testingDB')}
-        className="px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 mb-4"
-      >
-        Test DB
-      </button>
-
-      <button
-        onClick={handleLogout}
-        className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 mb-4"
-      >
-        Logout
-      </button>
-
-      {/* Task Creation Form */}
-
-      <form onSubmit={handleCreateTask} className="bg-white p-6 rounded shadow-md w-96">
-        <h2 className="text-2xl mb-4">Create New Task</h2>
-
-        <label className="block mb-2">User ID:</label>
-        <input
-          type="text"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-          className="w-full p-2 border rounded mb-4"
-          required
-        />
-
-        <label className="block mb-2">Task Name:</label>
-        <input
-          type="text"
-          value={taskName}
-          onChange={(e) => setTaskName(e.target.value)}
-          className="w-full p-2 border rounded mb-4"
-          required
-        />
-
-        <label className="block mb-2">Duration (minutes):</label>
-        <input
-          type="number"
-          value={duration}
-          onChange={(e) => setDuration(e.target.value)}
-          className="w-full p-2 border rounded mb-4"
-          required
-        />
-
-        <label className="block mb-2">Deadline:</label>
-        <input
-          type="datetime-local"
-          value={deadline}
-          onChange={(e) => setDeadline(e.target.value)}
-          className="w-full p-2 border rounded mb-4"
-          required
-        />
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-        >
-          Add Task
-        </button>
-      </form>
-
-      {/* FullCalendar to Display Tasks */}
-
-      <div className="mt-10 w-full max-w-4xl bg-white p-6 rounded shadow-md">
-        <h2 className="text-2xl mb-4">Your Scheduled Tasks</h2>
-        <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin]} // Added interaction plugin
-          initialView="dayGridMonth"
-          events={timeSlots} // Display tasks from DB
-          editable={true} // Allow drag & drop
-          eventDrop={handleEventDrop} // Handle event drop
-          height="600px"
-        />
+          {/* Smart Suggestions */}
+          <div className="smart-suggestions">
+            <h3>Smart Suggestions</h3>
+            <div className="suggestion-box">
+          
+            </div>
+          </div>
+        </div>
       </div>
-
     </div>
   );
 };
 
 export default DashboardPage;
+
+
