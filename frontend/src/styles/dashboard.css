@@ -1,4 +1,6 @@
 
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&display=swap');
 
 /* File: src/styles/dashboard.css */
 @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap');
@@ -151,8 +153,10 @@
   border-radius: 8px;
   height: 40vh;
   overflow: hidden;
+  font-size: 0.7rem;
 }
 
+/* Apply the new font to smart suggestions */
 .suggestion-box {
   background: white;
   padding: 1rem;
@@ -160,7 +164,24 @@
   margin-top: 10px;
   height: 80%;
   overflow: auto;
+  font-family: 'Playfair Display', serif; /* Stylish italic font */
+  font-style: italic; /* Italicized text */
+  font-size: 1rem; /* Slightly larger font for emphasis */
+  color: black; 
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 }
+
+/* 
+.suggestion-box {
+  background: white;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-top: 10px;
+  height: 80%;
+  overflow: auto;
+} */
 
 /* Modal Styles */
 /* .modal-overlay {

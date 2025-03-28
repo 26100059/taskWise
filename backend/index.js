@@ -18,6 +18,7 @@ app.use("/api/tasks", require("./routes/tasks"));
 
 // Mount scheduling routes
 app.use("/api/scheduling", require("./routes/scheduling"));
+app.use("/api/suggestions", require("./routes/suggestions"));
 
 connectToDatabase()
   .then(() => {
