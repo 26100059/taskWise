@@ -1,3 +1,5 @@
+
+
 /* File: src/styles/dashboard.css */
 @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap');
 
@@ -63,7 +65,7 @@
   color: red;
 }
 
-/* Main Container: Set to 95vh so that everything fits */
+/* Main Container */
 .main-container {
   display: flex;
   justify-content: space-between;
@@ -74,7 +76,7 @@
 /* Calendar Section */
 .calendar-section {
   flex: 3;
-  background: white;
+  /* background: var(--light-gray); */
   border-radius: 8px;
   padding: 1rem;
   border: 1px solid var(--light-gray);
@@ -91,17 +93,43 @@
   height: 85vh;
 }
 
-/* Side Panel Children with fixed heights */
+/* Add Task Form: 60vh without outer scrollbars */
 .add-task {
   background: var(--light-gray);
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
-  /* flex: 5; Approximately 40vh (if side panel is 85vh, 40/85 ≈ 47%) */
-  overflow: auto;
   height: 60vh;
+  overflow: hidden;
 }
 
-.export-btn {
+/* Row for deadline and duration fields */
+.task-details-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 10px;
+}
+
+.task-detail {
+  flex: 1;
+}
+
+.add-task label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.add-task input,
+.add-task textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--medium-gray);
+  border-radius: 5px;
+}
+
+/* Add Task Button */
+.add-btn {
   background: var(--primary-color);
   color: white;
   padding: 10px;
@@ -110,20 +138,19 @@
   cursor: pointer;
   border-radius: 5px;
   transition: 0.3s;
-  flex: 1; /* Approximately 5-10vh */
 }
 
-.export-btn:hover {
+.add-btn:hover {
   background: var(--primary-hover);
 }
 
+/* Smart Suggestions: 40vh; inner suggestion-box fills container */
 .smart-suggestions {
   background: var(--light-gray);
-  padding: 1rem;
+  padding: 0.8rem;
   border-radius: 8px;
-  /* flex: 3; Remaining space for smart suggestions */
-  overflow: auto;
-  height: 30vh;
+  height: 40vh;
+  overflow: hidden;
 }
 
 .suggestion-box {
@@ -131,8 +158,173 @@
   padding: 1rem;
   border-radius: 5px;
   margin-top: 10px;
-  min-height: 80%;
+  height: 80%;
+  overflow: auto;
 }
+
+/* Modal Styles */
+/* .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+} 
+
+.modal-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+} */
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+}
+
+/* Make the "Mark as done" text bold */
+.modal-status label {
+  font-weight: bold;
+  /* margin-right: 8px; */
+}
+
+.modal-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+/* Style the Save button (blue) */
+.modal-actions button:first-child {
+  background-color: #3b82f6; /* blue */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-actions button:first-child:hover {
+  background-color: #2563eb; /* darker blue */
+}
+
+/* Style the Close button (grey) */
+.modal-actions button:last-child {
+  background-color: #9ca3af; /* grey */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-actions button:last-child:hover {
+  background-color: #7f8c8d; /* darker grey */
+}
+
+
+/* dashboard.css */
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  /* background-color: #fff; */
+  background-color: var(--light-gray);
+  border-bottom: 1px solid #ddd;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+}
+
+.brand-image {
+  height: 40px;
+}
+
+/* Navigation buttons container */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+}
+
+/* Icon button styles */
+.nav-btn.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin: 0 10px;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  color: inherit;
+  color: black;
+}
+
+/* Dark mode toggle container */
+.dark-mode-toggle {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+}
+
+.dark-mode-label {
+  margin-right: 8px;
+  font-size: 0.9rem;
+  color: black;
+}
+
+/* Logout button styled in red */
+.nav-btn.logout {
+  background-color: #e74c3c;
+  border: none;
+  padding: 8px 12px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+/* Additional styles for calendar, modal, etc. remain unchanged */
+/* ... */
+
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {

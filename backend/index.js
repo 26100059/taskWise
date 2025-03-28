@@ -1,21 +1,22 @@
 const express = require("express");
-const cors = require('cors'); // Import cors
+const cors = require("cors");
 const app = express();
-const connectToDatabase = require('./db/mongo');
+const connectToDatabase = require("./db/mongo");
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Testing backend.");
 });
 
-app.use('/testingDB', require('./routes/testingDB'));
+// Mount testing routes if needed
+app.use("/testingDB", require("./routes/testingDB"));
 
-// Mount task routes at `/api/tasks`
+// Mount tasks routes
 app.use("/api/tasks", require("./routes/tasks"));
 
-// Mount scheduling routes at `/api/scheduling`
+// Mount scheduling routes
 app.use("/api/scheduling", require("./routes/scheduling"));
 
 connectToDatabase()
