@@ -1,5 +1,6 @@
 // backend/routes/tasks.js
 //Note: This file handles both tasks and their corresponding timeslots. 
+const mongoose = require('mongoose');
 
 const express = require("express");
 const Task = require("../models/Task")
@@ -7,24 +8,16 @@ const TimeSlot = require("../models/TimeSlot.js")
 const router = express.Router();
 
 
-//TASK ROUTES
-//Create a task
-router.post("/", async (req, res) => {
-    try {
-        const newTask = new Task(req.body);
-        await newTask.save();
-        res.json(newTask);
-    } catch (error) {
-        res.status(500).json({ error: "Error creating task" });
-    }
-});
+// const FIXED_USER_ID = new mongoose.Types.ObjectId("67d96ed12fa6e5fb171af63f"); //sherlock holmes
 
 
 //TIMESLOTS ROUTES
-// Fetch all time slots
+// Fetch all time slots. Note: This is a different kind of fetch of timeslots as it updates the timeslots slightly.
+//For normal use of fetching timeslots, testingDB shall be used.
 router.get("/timeSlots", async (req, res) => {
     try {
         const timeSlots = await TimeSlot.find().populate("task_id"); // Populate task details if needed
+        // const timeSlots = await TimeSlot.find({ user_id: FIXED_USER_ID }).populate("task_id");
         res.json(timeSlots);
     } catch (error) {
         res.status(500).json({ error: "Error fetching time slots" });

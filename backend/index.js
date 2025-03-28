@@ -15,6 +15,8 @@ app.use('/testingDB', require('./routes/testingDB'));
 // Mount task routes at `/api/tasks`
 app.use("/api/tasks", require("./routes/tasks"));
 
+// Mount scheduling routes at `/api/scheduling`
+app.use("/api/scheduling", require("./routes/scheduling"));
 
 connectToDatabase()
   .then(() => {

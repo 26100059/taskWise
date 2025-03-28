@@ -49,13 +49,32 @@ const DashboardPage = () => {
   }, []);
 
   // Handle task form submission
-  const handleTaskSubmit = (e) => {
+  const handleTaskSubmit = async (e) => {
     e.preventDefault();
     if (!taskInput.name || !taskInput.deadline || !taskInput.duration) return;
-    alert("Task added:\n" + JSON.stringify(taskInput, null, 2));
-    setTaskInput({ name: "", deadline: "", duration: "", info: "" });
-    fetchTimeSlots();
+
+    try {
+      const response = await fetch("http://localhost:7000/api/scheduling/schedule-task", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(taskInput),
+      });
+
+      if (response.ok) {
+        alert("Task added successfully!");
+        setTaskInput({ name: "", deadline: "", duration: "", info: "" });
+        fetchTimeSlots(); // Refresh time slots after adding task
+      } else {
+        alert("Failed to add task");
+      }
+    } catch (error) {
+      console.error("Error adding task:", error);
+      alert("Error adding task");
+    }
   };
+
 
   // Handle event drop (drag & drop update)
   const handleEventDrop = async (eventDropInfo) => {
@@ -186,7 +205,7 @@ const DashboardPage = () => {
           <div className="smart-suggestions">
             <h3>Smart Suggestions</h3>
             <div className="suggestion-box">
-          
+
             </div>
           </div>
         </div>
