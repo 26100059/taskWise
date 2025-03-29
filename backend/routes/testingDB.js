@@ -11,6 +11,12 @@ const TimeSlot = require('../models/TimeSlot');
 const Suggestion = require('../models/Suggestion');
 const UserProfileStats = require('../models/UserProfileStats');
 
+const {getTimeSlotsByUserId} = require('../dbFunctions'); // Import from dbFunctions.js
+const authenticateToken = require('../authMiddleware'); // Import the middleware for redux state
+
+//important for login
+const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key'; // Replace with a strong secret key
+
 /* ===== USERS CRUD ===== */
 // Get all users
 router.get('/users', async (req, res) => {
@@ -99,7 +105,21 @@ router.delete('/tasks/:id', async (req, res) => {
   }
 });
 
+
 /* ===== TIME SLOTS CRUD ===== */
+
+// Get time slots by user ID
+router.get('/timeSlots-by-userid',authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId; //obtained from redux jwt token
+
+    const timeSlots = await getTimeSlotsByUserId(userId); // Call the function to get time slots
+    res.json(timeSlots);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Get all time slots
 router.get('/timeslots', async (req, res) => {
   try {
@@ -231,20 +251,7 @@ router.delete('/userprofilestats/:id', async (req, res) => {
   }
 });
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key'; // Replace with a strong secret key
 
-// Middleware to authenticate tokens
-const authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(401).json({ error: "Access denied, token missing" });
-
-  jwt.verify(token.split(" ")[1], JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: "Invalid token" });
-
-    req.user = user; // Attach user payload to request
-    next();
-  });
-};
 
 // Register a new user
 router.post('/usersregister', async (req, res) => {
@@ -272,6 +279,7 @@ router.post('/usersregister', async (req, res) => {
 });
 
 // Login user and generate token
+
 router.post('/userslogin', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -289,17 +297,17 @@ router.post('/userslogin', async (req, res) => {
     }
 
     // Generate JWT
-    const token = jwt.sign({ userId: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, name: user.name },  // ✅ Include 'name' in token payload
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
-    res.json({ message: "Login successful", token, userId: user._id });
+    // ✅ Send name in response
+    res.json({ message: "Login successful", token, userId: user._id, name: user.name });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Example protected route
-router.get('/protected', authenticateToken, (req, res) => {
-  res.json({ message: `Hello, ${req.user.email}! This is a protected route. You have access to it` });
-});
-
-module.exports = router;
+module.exports = router;  // Export router

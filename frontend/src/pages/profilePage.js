@@ -1,5 +1,6 @@
 // src/pages/ProfilePage.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from "react-redux";
 import { Line as ChartLine, Pie } from 'react-chartjs-2';
 // import GaugeChart from 'react-gauge-chart';
 import GaugeComponent from "react-gauge-component";
@@ -16,7 +17,6 @@ import {
   Legend,
 } from 'chart.js';
 import '../styles/profilePage.css';
-import { AuthContext } from '../context/AuthContext';
 
 ChartJS.register(
   CategoryScale,
@@ -30,7 +30,10 @@ ChartJS.register(
 );
 
 const ProfilePage = () => {
-  const { user } = useContext(AuthContext);
+  const user = useSelector((state) => state.auth.user);
+  console.log("USER IS: ", user)
+
+  const userId = user.userId
 
   // Unconditionally call all hooks
   const [profileStats, setProfileStats] = useState(null);
@@ -39,11 +42,11 @@ const ProfilePage = () => {
 
   // Fetch data from the backend using the logged-in user's ID
   useEffect(() => {
-    if (!user) {
+    if (userId) {
       setLoading(false);
       return;
     }
-    fetch(`http://localhost:7000/api/profile/${user._id}/analytics`)
+    fetch(`http://localhost:7000/api/profile/${userId}/analytics`)
       .then((res) => res.json())
       .then((data) => {
         setAnalytics(data.productivity);
@@ -54,7 +57,7 @@ const ProfilePage = () => {
         console.error("Error fetching analytics:", err);
         setLoading(false);
       });
-  }, [user]);
+  }, [userId]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -63,7 +66,7 @@ const ProfilePage = () => {
     return <div>Please log in to view your profile.</div>;
   }
 
-  const userName = profileStats?.name || user.name;
+  const userName = profileStats?.name || user.name; // the second term user.name is from redux state.
   const xp = profileStats?.xp || 0;
   const level = profileStats?.level || Math.floor(xp / 100) + 1;
   const currentXP = xp % 100;

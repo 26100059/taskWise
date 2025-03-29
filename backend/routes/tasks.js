@@ -3,13 +3,19 @@ const mongoose = require("mongoose");
 const Task = require("../models/Task");
 const TimeSlot = require("../models/TimeSlot");
 const router = express.Router();
+const authenticateToken = require('../authMiddleware'); // Import the middleware for redux state
+
 
 // GET /timeSlots - Fetch time slots (optionally filter by user_id)
-router.get("/timeSlots", async (req, res) => {
+router.get("/timeSlots", authenticateToken, async (req, res) => {
   try {
+
+    const userId = req.user.userId;
+    console.log("Yes we have USER ID IN TIMESLOTS available: ", userId);
+
     const query = {};
-    if (req.query.user_id) {
-      query.user_id = req.query.user_id;
+    if (userId) {
+      query.user_id = userId;
     }
     const timeSlots = await TimeSlot.find(query).populate("task_id");
     res.json(timeSlots);
@@ -17,6 +23,7 @@ router.get("/timeSlots", async (req, res) => {
     res.status(500).json({ error: "Error fetching time slots" });
   }
 });
+
 
 // PUT /timeSlots/:id - Update time slot when dragged and dropped
 router.put("/timeSlots/:id", async (req, res) => {
@@ -38,45 +45,27 @@ router.put("/timeSlots/:id", async (req, res) => {
   }
 });
 
-// // PUT /tasks/mark-done/:id - Mark a task as done
-// router.put("/mark-done/:id", async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const updatedTask = await Task.findByIdAndUpdate(
-//       id,
-//       { status: "done" },
-//       { new: true }
-//     );
-//     if (!updatedTask) {
-//       return res.status(404).json({ error: "Task not found" });
-//     }
-//     res.json(updatedTask);
-//   } catch (error) {
-//     console.error("Error marking task as done:", error);
-//     res.status(500).json({ error: "Failed to update task status" });
-//   }
-// });
 
 // Updated code
 router.put("/mark-done/:id", async (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body; // expects "done" or "pending"
-    try {
-      const updatedTask = await Task.findByIdAndUpdate(
-        id,
-        { status },
-        { new: true }
-      );
-      if (!updatedTask) {
-        return res.status(404).json({ error: "Task not found" });
-      }
-      res.json(updatedTask);
-    } catch (error) {
-      console.error("Error updating task status:", error);
-      res.status(500).json({ error: "Failed to update task status" });
+  const { id } = req.params;
+  const { status } = req.body; // expects "done" or "pending"
+  try {
+    const updatedTask = await Task.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+    if (!updatedTask) {
+      return res.status(404).json({ error: "Task not found" });
     }
-  });
-  
+    res.json(updatedTask);
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    res.status(500).json({ error: "Failed to update task status" });
+  }
+});
+
 
 // (Optional) GET /tasks/tasksList - Fetch a list of tasks for the user
 router.get("/tasksList", async (req, res) => {
