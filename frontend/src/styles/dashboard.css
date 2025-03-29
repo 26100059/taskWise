@@ -1,8 +1,6 @@
-
-/* Import Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&display=swap');
-
 /* File: src/styles/dashboard.css */
+
+/* Google font imports, root variables, resets, etc. */
 @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap');
 
 :root {
@@ -40,14 +38,29 @@
 }
 
 .brand {
-  font-size: 2rem;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
 }
 
+.brand-image {
+  height: 40px;
+}
+
+/* Hamburger icon: hidden on desktop, shown on mobile */
+.hamburger {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: white;
+  margin-left: 1rem;
+}
+
+/* Nav buttons (desktop layout) */
 .nav-buttons {
   display: flex;
   align-items: center;
   gap: 1rem;
+  transition: all 0.3s ease;
 }
 
 .nav-btn {
@@ -63,26 +76,42 @@
   color: var(--primary-color);
 }
 
+/* Logout button in red */
 .logout {
-  color: red;
+  background-color: #e74c3c;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  color: #fff;
 }
 
-/* Main Container */
+/* Dark mode toggle container */
+.dark-mode-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.dark-mode-label {
+  margin-right: 8px;
+  font-size: 0.9rem;
+  color: white;
+}
+
+/* Main Container (desktop layout) */
 .main-container {
   display: flex;
   justify-content: space-between;
   padding: 1rem;
-  height: 95vh;
+  height: 90vh; /* 100% minus 10vh for navbar */
 }
 
 /* Calendar Section */
 .calendar-section {
   flex: 3;
-  /* background: var(--light-gray); */
   border-radius: 8px;
   padding: 1rem;
   border: 1px solid var(--light-gray);
-  height: 85vh;
+  height: 100%;
 }
 
 /* Side Panel */
@@ -92,33 +121,32 @@
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  height: 85vh;
+  height: 100%;
 }
 
-/* Add Task Form: 60vh without outer scrollbars */
+/* Add Task */
 .add-task {
   background: var(--light-gray);
-  padding: 0.5rem 1rem;
+  padding: 1rem;
   border-radius: 8px;
-  height: 60vh;
-  overflow: hidden;
-}
-
-/* Row for deadline and duration fields */
-.task-details-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 10px;
-}
-
-.task-detail {
-  flex: 1;
+  height: 60%;
 }
 
 .add-task label {
   display: block;
   font-size: 0.9rem;
   margin-bottom: 5px;
+}
+
+.task-details-row {
+  display: flex;
+  flex-direction: column; /* Stack Deadline and Duration vertically */
+  gap: 1rem;
+  margin-bottom: 10px;
+}
+
+.task-detail {
+  flex: 1;
 }
 
 .add-task input,
@@ -133,7 +161,7 @@
 /* Add Task Button */
 .add-btn {
   background: var(--primary-color);
-  color: white;
+  color: #fff;
   padding: 10px;
   border: none;
   width: 100%;
@@ -141,77 +169,35 @@
   border-radius: 5px;
   transition: 0.3s;
 }
-
 .add-btn:hover {
   background: var(--primary-hover);
 }
 
-/* Smart Suggestions: 40vh; inner suggestion-box fills container */
+/* Smart Suggestions */
 .smart-suggestions {
   background: var(--light-gray);
-  padding: 0.8rem;
+  padding: 1rem;
   border-radius: 8px;
-  height: 40vh;
-  overflow: hidden;
-  font-size: 0.7rem;
+  height: 40%;
 }
 
-/* Apply the new font to smart suggestions */
 .suggestion-box {
   background: white;
   padding: 1rem;
   border-radius: 5px;
   margin-top: 10px;
-  height: 80%;
+  height: calc(100% - 2rem);
   overflow: auto;
-  font-family: 'Playfair Display', serif; /* Stylish italic font */
-  font-style: italic; /* Italicized text */
-  font-size: 1rem; /* Slightly larger font for emphasis */
-  color: black; 
+  font-style: italic;
+  font-size: 1rem;
+  color: black;
   text-align: center;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* 
-.suggestion-box {
-  background: white;
-  padding: 1rem;
-  border-radius: 5px;
-  margin-top: 10px;
-  height: 80%;
-  overflow: auto;
-} */
-
-/* Modal Styles */
-/* .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-} 
-
-.modal-actions {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-} */
-/* Modal Styles */
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -224,7 +210,6 @@
   justify-content: center;
   z-index: 1000;
 }
-
 .modal-content {
   background: white;
   padding: 1.5rem;
@@ -232,134 +217,157 @@
   width: 90%;
   max-width: 500px;
 }
-
-/* Make the "Mark as done" text bold */
-.modal-status label {
-  font-weight: bold;
-  /* margin-right: 8px; */
-}
-
 .modal-actions {
   margin-top: 1rem;
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
 }
-
-/* Style the Save button (blue) */
 .modal-actions button:first-child {
-  background-color: #3b82f6; /* blue */
+  background-color: #3b82f6;
   color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
-
-.modal-actions button:first-child:hover {
-  background-color: #2563eb; /* darker blue */
-}
-
-/* Style the Close button (grey) */
 .modal-actions button:last-child {
-  background-color: #9ca3af; /* grey */
+  background-color: #9ca3af;
   color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.modal-actions button:last-child:hover {
-  background-color: #7f8c8d; /* darker grey */
-}
-
-
-/* dashboard.css */
-
-/* Navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  /* background-color: #fff; */
-  background-color: var(--light-gray);
-  border-bottom: 1px solid #ddd;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-}
-
-.brand-image {
-  height: 40px;
-}
-
-/* Navigation buttons container */
-.nav-buttons {
-  display: flex;
-  align-items: center;
-}
-
-/* Icon button styles */
-.nav-btn.icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin: 0 10px;
-  font-size: 1.4rem;
-  display: flex;
-  align-items: center;
-  color: inherit;
-  color: black;
-}
-
-/* Dark mode toggle container */
-.dark-mode-toggle {
-  display: flex;
-  align-items: center;
-  margin: 0 10px;
-}
-
-.dark-mode-label {
-  margin-right: 8px;
-  font-size: 0.9rem;
-  color: black;
-}
-
-/* Logout button styled in red */
-.nav-btn.logout {
-  background-color: #e74c3c;
-  border: none;
-  padding: 8px 12px;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-left: 10px;
-  font-weight: bold;
-}
-
-/* Additional styles for calendar, modal, etc. remain unchanged */
-/* ... */
-
-
-/* Responsive Adjustments */
+/* Responsive (<= 768px) */
 @media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+  .nav-buttons {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 8vh;
+    right: 1rem;
+    /* Make the mobile dropdown blue */
+    background: #1e3a8a;
+    padding: 1rem;
+    border-radius: 5px;
+    z-index: 999;
+  }
+  .nav-buttons.active {
+    display: flex;
+  }
+
+  /* White text in the mobile menu */
+  .nav-buttons .nav-btn,
+  .nav-buttons i,
+  .nav-buttons .dark-mode-label {
+    color: #fff;
+  }
+
   .main-container {
     flex-direction: column;
     height: auto;
   }
-  
+
   .calendar-section {
+    width: 100%;
     height: auto;
     margin-bottom: 1rem;
   }
-  
+
   .side-panel {
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+  }
+  .smart-suggestions {
+    width: 50%;
+    margin-right: 0.5rem;
+    height: auto;
+  }
+  .add-task {
+    width: 50%;
+    margin-left: 0.5rem;
     height: auto;
   }
 }
+
+/* ----------------------------------------------------- */
+/*       FINAL OVERRIDES FOR FULLCALENDAR DAY TEXT       */
+/* ----------------------------------------------------- */
+
+/* Light Mode: Force day names & numbers to be black */
+body:not(.dark-mode) .fc .fc-daygrid-day-number,
+body:not(.dark-mode) .fc .fc-col-header-cell-cushion,
+body:not(.dark-mode) .fc .fc-daygrid-day-text,
+body:not(.dark-mode) .fc .fc-daygrid-day-top {
+  color: black !important;
+}
+
+/* Dark Mode: Force day names & numbers to be white */
+body.dark-mode .fc .fc-daygrid-day-number,
+body.dark-mode .fc .fc-col-header-cell-cushion,
+body.dark-mode .fc .fc-daygrid-day-text,
+body.dark-mode .fc .fc-daygrid-day-top {
+  color: white !important;
+}
+
+/* ----------------------------------------------------------------- */
+/*                  DARK MODE OVERRIDES                             */
+/* ----------------------------------------------------------------- */
+
+/* Blue background for "Add Task" and "Smart Suggestions" in dark mode */
+.dark-mode .add-task,
+.dark-mode .smart-suggestions {
+  background-color: #1e3a8a; /* Blue */
+  color: #fff;
+}
+
+/* Make input labels, text, etc. white in dark mode */
+.dark-mode .add-task label,
+.dark-mode .add-task input,
+.dark-mode .add-task textarea {
+  color: #fff;
+}
+
+/* Darken input backgrounds in dark mode */
+.dark-mode .add-task input,
+.dark-mode .add-task textarea {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+}
+
+/* Darken suggestion box background in dark mode */
+.dark-mode .suggestion-box {
+  background-color: #374151;
+  color: #fff;
+}
+
+/* Optional: darker background for the calendar area in dark mode */
+.dark-mode .calendar-section {
+  background-color: #1a1a1a;
+}
+
+
+/* ========== DARK MODE: Calendar Header Fix ========== */
+
+/* Make the weekday header cells dark in dark mode */
+.dark-mode .fc .fc-daygrid-header,
+.dark-mode .fc .fc-daygrid-header-cell,
+.dark-mode .fc .fc-col-header-cell {
+  background-color: #1a1a1a !important; /* or #333, any dark color */
+  color: #fff !important;
+}
+
+/* Ensure day numbers and header text remain white */
+.dark-mode .fc .fc-daygrid-day-number,
+.dark-mode .fc .fc-col-header-cell-cushion,
+.dark-mode .fc .fc-daygrid-day-text,
+.dark-mode .fc .fc-daygrid-day-top {
+  color: #fff !important;
+}
+
