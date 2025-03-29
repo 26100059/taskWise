@@ -64,8 +64,12 @@ const createNewTimeSlots = async (newTimeSlots, session) => {
 //Fetches timeslots and populates them with task name.
 const getTimeSlotsByUserId = async (userId) => {
     try {
-      // Step 1: Find all tasks associated with the user_id
-      const tasks = await Task.find({ user_id: userId });
+      
+      // Step 1: Find all tasks associated with the user_id only.
+      // const tasks = await Task.find({ user_id: userId });
+      
+      // Step 1: Find all tasks associated with the user_id plus only the pending tasks.
+      const tasks = await Task.find({ user_id: userId, status: "pending" });
   
       // Step 2: Extract task IDs from the tasks
       const taskIds = tasks.map(task => task._id);
