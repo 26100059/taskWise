@@ -45,9 +45,10 @@ You are an intelligent scheduling assistant. Your task is to schedule a new task
 1. **No Overlaps:** Ensure the new task does not conflict with existing tasks.
 2. **Duration of new timeslots:** Strictly ensure the duration of the new timeslots you make must equal the duration of the input task. 
 3. **Deadline Priority:** The task must be scheduled before the deadline.
-4. **Task Splitting:** For long tasks you can break them into multiple time slots and even seperate days as long as they fit before deadline.
-5. **User Preferences:** If additional information is provided, prioritize it over general rules.
-6. **Strict JSON Output:** The response must be a **valid JSON array** with the format shown below.
+4. **Current Time:** The new timeslots generated must have a time after the current_time provided.
+5. **Task Splitting:** For long tasks you can break them into multiple time slots and even seperate days as long as they fit before deadline.
+6. **User Preferences:** If additional information is provided, prioritize it over general rules.
+7. **Strict JSON Output:** The response must be a **valid JSON array** with the format shown below.
 
 
 ---
@@ -55,6 +56,7 @@ You are an intelligent scheduling assistant. Your task is to schedule a new task
 ### **User's Input:**
 \`\`\`json
 {
+  "current_time" : ${new Date().toISOString()},
   "newTask": {
     "task_id": "${newTask._id}",
     "duration": ${newTask.duration},
