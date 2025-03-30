@@ -241,8 +241,14 @@ const DashboardPage = () => {
   };
 
   // Dark mode effect
+  // useEffect(() => {
+  //   document.body.classList.toggle("dark-mode", isDarkMode);
+  // }, [isDarkMode]);
+
+  // Update dark mode preference on change
   useEffect(() => {
     document.body.classList.toggle("dark-mode", isDarkMode);
+    localStorage.setItem("darkMode", isDarkMode);
   }, [isDarkMode]);
 
   // Logout handler with redux
@@ -272,6 +278,7 @@ const DashboardPage = () => {
           </button>
           <div className="dark-mode-toggle">
             <span className="dark-mode-label">Dark Mode</span>
+
             <Switch
               onChange={setIsDarkMode}
               checked={isDarkMode}
