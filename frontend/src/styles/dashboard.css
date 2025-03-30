@@ -1,4 +1,3 @@
-
 /* Import Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&display=swap');
 
@@ -27,44 +26,93 @@
   background: #1a1a1a;
   color: white;
 }
+/* Dark Mode Overrides for Specific Components */
+.dark-mode .navbar,
+.dark-mode .smart-suggestions,
+.dark-mode .add-task {
+  background-color: var(--navbar-bg) !important;
+}
+
+/* Dark mode field labels */
+.dark-mode .add-task label {
+  color: white;
+}
+
+/* Dark mode input fields */
+.dark-mode .add-task input,
+.dark-mode .add-task textarea {
+  background-color: var(--dark-gray);
+  color: white;
+  border: 1px solid var(--medium-gray);
+}
+
+/* Dark mode smart suggestions inner box */
+.dark-mode .suggestion-box {
+  background-color: var(--dark-gray);
+  color: white;
+}
+
 
 /* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--navbar-bg);
-  color: white;
-  padding: 1rem 2rem;
-  height: 10vh;
+  background-color: var(--light-gray);
+  /* border-bottom: 1px solid #ddd; */
+  padding: 10px 20px;
 }
 
 .brand {
-  font-size: 2rem;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
 }
 
+.brand-image {
+  height: 40px;
+}
+
+/* Navigation buttons container */
 .nav-buttons {
   display: flex;
   align-items: center;
-  gap: 1rem;
 }
 
-.nav-btn {
-  background: transparent;
+/* Icon button styles */
+.nav-btn.icon-btn {
+  background: none;
   border: none;
-  color: white;
-  font-size: 1rem;
   cursor: pointer;
-  transition: 0.3s;
+  margin: 0 10px;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  color: black;
 }
 
-.nav-btn:hover {
-  color: var(--primary-color);
+/* Dark mode toggle container */
+.dark-mode-toggle {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
 }
 
-.logout {
-  color: red;
+.dark-mode-label {
+  margin-right: 8px;
+  font-size: 0.9rem;
+  color: black;
+}
+
+/* Logout button styled in red */
+.nav-btn.logout {
+  background-color: #e74c3c;
+  border: none;
+  padding: 8px 12px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-left: 10px;
+  font-weight: bold;
 }
 
 /* Main Container */
@@ -78,7 +126,6 @@
 /* Calendar Section */
 .calendar-section {
   flex: 3;
-  /* background: var(--light-gray); */
   border-radius: 8px;
   padding: 1rem;
   border: 1px solid var(--light-gray);
@@ -95,7 +142,7 @@
   height: 85vh;
 }
 
-/* Add Task Form: 60vh without outer scrollbars */
+/* Add Task Form */
 .add-task {
   background: var(--light-gray);
   padding: 0.5rem 1rem;
@@ -146,7 +193,7 @@
   background: var(--primary-hover);
 }
 
-/* Smart Suggestions: 40vh; inner suggestion-box fills container */
+/* Smart Suggestions */
 .smart-suggestions {
   background: var(--light-gray);
   padding: 0.8rem;
@@ -164,53 +211,15 @@
   margin-top: 10px;
   height: 80%;
   overflow: auto;
-  font-family: 'Playfair Display', serif; /* Stylish italic font */
-  font-style: italic; /* Italicized text */
-  font-size: 1rem; /* Slightly larger font for emphasis */
-  color: black; 
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: black;
   text-align: center;
   justify-content: center;
   align-items: center;
 }
 
-/* 
-.suggestion-box {
-  background: white;
-  padding: 1rem;
-  border-radius: 5px;
-  margin-top: 10px;
-  height: 80%;
-  overflow: auto;
-} */
-
-/* Modal Styles */
-/* .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-} 
-
-.modal-actions {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-} */
 /* Modal Styles */
 .modal-overlay {
   position: fixed;
@@ -236,7 +245,6 @@
 /* Make the "Mark as done" text bold */
 .modal-status label {
   font-weight: bold;
-  /* margin-right: 8px; */
 }
 
 .modal-actions {
@@ -246,9 +254,8 @@
   gap: 1rem;
 }
 
-/* Style the Save button (blue) */
 .modal-actions button:first-child {
-  background-color: #3b82f6; /* blue */
+  background-color: #3b82f6;
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -258,12 +265,11 @@
 }
 
 .modal-actions button:first-child:hover {
-  background-color: #2563eb; /* darker blue */
+  background-color: #2563eb;
 }
 
-/* Style the Close button (grey) */
 .modal-actions button:last-child {
-  background-color: #9ca3af; /* grey */
+  background-color: #9ca3af;
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -273,79 +279,8 @@
 }
 
 .modal-actions button:last-child:hover {
-  background-color: #7f8c8d; /* darker grey */
+  background-color: #7f8c8d;
 }
-
-
-/* dashboard.css */
-
-/* Navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  /* background-color: #fff; */
-  background-color: var(--light-gray);
-  border-bottom: 1px solid #ddd;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-}
-
-.brand-image {
-  height: 40px;
-}
-
-/* Navigation buttons container */
-.nav-buttons {
-  display: flex;
-  align-items: center;
-}
-
-/* Icon button styles */
-.nav-btn.icon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin: 0 10px;
-  font-size: 1.4rem;
-  display: flex;
-  align-items: center;
-  color: inherit;
-  color: black;
-}
-
-/* Dark mode toggle container */
-.dark-mode-toggle {
-  display: flex;
-  align-items: center;
-  margin: 0 10px;
-}
-
-.dark-mode-label {
-  margin-right: 8px;
-  font-size: 0.9rem;
-  color: black;
-}
-
-/* Logout button styled in red */
-.nav-btn.logout {
-  background-color: #e74c3c;
-  border: none;
-  padding: 8px 12px;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-left: 10px;
-  font-weight: bold;
-}
-
-/* Additional styles for calendar, modal, etc. remain unchanged */
-/* ... */
-
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
