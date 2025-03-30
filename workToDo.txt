@@ -1,8 +1,11 @@
 dark mode local storage fix
 dashboard + profile page responsiveness
 
+
+frontend touches
 profile page backend
 model fine tuning
+alerts and loaders
 
 env File
 deployment
