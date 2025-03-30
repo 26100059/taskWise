@@ -6,8 +6,9 @@
     --light-gray: #f3f4f6;
     --medium-gray: #9ca3af;
     --dark-gray: #4b5563;
+    --background-color: white;
   }
-  
+
   * {
     box-sizing: border-box;
     margin: 0;
@@ -18,56 +19,79 @@
     font-family: Arial, sans-serif;
     line-height: 1.6;
     color: var(--text-color);
+    background-color: var(--background-color);
   }
   
   /* Container for the profile page */
   .profilePage-container {
-    background-color: white;
+    background-color: var(--background-color); 
     padding: 2rem;
-    max-width: 1200px;
+    max-width: 95%;
     margin: 0 auto;
   }
+
+  .profilePage-header-wrapper {
+    background-color: var(--light-gray); 
+    border-radius: 8px;     
+    padding: 1rem;        
+    margin-bottom: 2rem;    
+} 
   
   /* Profile header with light grey background */
   .profilePage-header {
-    background-color: var(--light-gray);
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: white; 
+    border-radius: 8px;     
+    padding: 1.5rem;        
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+    margin-bottom: 0.2rem;   
   }
   
   .profilePage-user-name h2 {
-    font-size: 2rem;
-    margin: 0;
+    flex: 1;
+    font-size: 2rem; 
+    font-weight: bold; 
+    color: var(--text-color); 
+    
   }
   
   .profilePage-user-stats {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    align-items: flex-start;
+    gap: 0.25rem;
+ 
   }
   
   .profilePage-level-display {
     font-size: 1.5rem;
     font-weight: bold;
+    color: var(--text-color);
+  
   }
   
   .profilePage-xp-container {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    align-items: center; 
+    gap: 0.5rem;
+     
   }
   
   .profilePage-xp-bar {
-    width: 200px;
+    width: 100%; 
+    max-width: 200px; 
+    height: 15px; 
+    
   }
   
   .profilePage-xp-text {
     font-size: 1rem;
     color: var(--dark-gray);
+    font-weight: bold;
   }
   
   /* Productivity analytics section with light grey background */
@@ -75,17 +99,24 @@
     background-color: var(--light-gray);
     padding: 1rem;
     border-radius: 8px;
+    
   }
   
   /* Container for all graphs */
   .profilePage-graphs-container {
     display: flex;
     gap: 2rem;
+    
   }
   
   /* Left graph (weekly trend) is 2x wider than right graphs */
   .profilePage-left-graph {
     flex: 2;
+    background-color: white; 
+    border-radius: 10px; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+    padding: 1rem; 
+    
   }
   
   /* Right graphs: stacked vertically */
@@ -94,24 +125,92 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    
+      
   }
   
   /* Right-side graph items constrained in height */
   .profilePage-graph-item {
     flex: 1;
     max-height: 300px;
+    background-color: white; 
+    border-radius: 10px; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+    padding: 1rem; 
+    
+    
   }
+
+  .chart-wrapper {
+    position: relative; 
+    height: 300px; 
+    width: 100%; 
+}
   
   /* Center align the gauge chart */
   .profilePage-gauge-chart-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    align-content: center;
+    justify-items: center;
+    
+  }
+
+  #overallProductivity{
+    padding: 10px;             
+    border-radius: 5px;       
+    font-family: 'Arial', sans-serif; 
+    font-size: 20px;           
+    text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.2);
   }
   
   .profilePage-gauge-label {
     margin-top: 0.5rem;
     font-size: 1rem;
     color: var(--dark-gray);
+    margin: 10px 0;        
+    font-weight: bold;      
+    text-align: center;     
+    
+    
+  }
+
+  /* Media Queries for responsiveness */
+@media (max-width: 768px) {
+  .profilePage-graphs-container {
+    flex-direction: column; /* Stack graphs vertically on smaller screens */
+    gap: 1rem;
   }
   
+  .profilePage-left-graph {
+    flex: none; 
+    width: 100%; /* Full width for smaller screens */
+    
+  }
+
+  .profilePage-right-graphs {
+    flex: none;
+    width: 100;   
+  }
+}
+
+/*
+@media (max-width: 500px) {
+  .profilePage-user-name h2 {
+    font-size: 1.5rem; 
+  }
+  
+  .profilePage-level-display {
+    font-size: 1.25rem; 
+  }
+  
+  .profilePage-xp-text {
+    font-size: 0.9rem; 
+  }
+}
+*/
+
+
+
+

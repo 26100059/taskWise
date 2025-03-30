@@ -94,11 +94,22 @@ const ProfilePage = () => {
     ],
   };
 
+
+
+// function to handle font size on screen resizing for graph title
+  const getFontSize = () => {
+    const width = window.innerWidth;
+
+    if (width > 1300) return 20; // desktop screens
+    return 15; // mobile screens
+};
+
+
   const lineOptions = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' },
-      title: { display: true, text: 'Weekly Trend' },
+      legend: { display: true, position: 'top', labels:{ font: { size: 15,},}, },
+      title: { display: true, text: 'Weekly Trend', font: {size : getFontSize(),} , padding: {bottom:10} },
     },
     scales: {
       y: {
@@ -139,19 +150,21 @@ const ProfilePage = () => {
 
   return (
     <div className="profilePage-container">
-      <div className="profilePage-header">
-        <div className="profilePage-user-name">
-          <h2>{userName}</h2>
-        </div>
-        <div className="profilePage-user-stats">
-          <div className="profilePage-level-display">
-            <span>Level: {level}</span>
+      <div className="profilePage-header-wrapper">
+        <div className="profilePage-header">
+          <div className="profilePage-user-name">
+            <h2>{userName}</h2>
           </div>
-          <div className="profilePage-xp-container">
-            <div className="profilePage-xp-bar">
-              <ProgressBar percent={progressPercent} strokeWidth="4" strokeColor="#3b82f6" />
+          <div className="profilePage-user-stats">
+            <div className="profilePage-level-display">
+              <span>Level: {level}</span>
             </div>
-            <div className="profilePage-xp-text">XP: {currentXP}/100</div>
+            <div className="profilePage-xp-container">
+              <div className="profilePage-xp-bar">
+                <ProgressBar percent={progressPercent} strokeWidth="10" strokeColor="#3b82f6" />
+              </div>
+              <div className="profilePage-xp-text">XP: {currentXP}/100</div>
+            </div>
           </div>
         </div>
       </div>
@@ -193,7 +206,7 @@ const ProfilePage = () => {
                   needleColor="#ef4444"
                   arcWidth={0.3}
                 /> */}
-                <p className="profilePage-gauge-label">Overall Productivity</p>
+                <p id="overallProductivity" className="profilePage-gauge-label">Overall Productivity</p>
               </div>
             </div>
           </div>
