@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "axios": "^1.8.2",
-    "dotenv": "^16.4.7",
-    "fs": "^0.0.1-security",
-    "groq-sdk": "^0.15.0",
-    "ics": "^3.8.1"
-  }
-}
