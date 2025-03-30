@@ -15,6 +15,7 @@ app.use('/testingDB', require('./routes/testingDB'));
 // Mount task routes at `/api/tasks`
 app.use("/api/tasks", require("./routes/tasks"));
 
+app.use('/token', require('./routes/token'));
 
 connectToDatabase()
   .then(() => {

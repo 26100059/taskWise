@@ -1,7 +1,10 @@
 // src/pages/ProfilePage.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProfileStats } from '../redux/slices/profileSlice';
+import { selectCurrentUser, selectAuthToken } from '../redux/slices/authSlice';
+import axios from 'axios';
 import { Line as ChartLine, Pie } from 'react-chartjs-2';
-// import GaugeChart from 'react-gauge-chart';
 import GaugeComponent from "react-gauge-component";
 import { Line as ProgressBar } from 'rc-progress';
 import {
@@ -16,7 +19,6 @@ import {
   Legend,
 } from 'chart.js';
 import '../styles/profilePage.css';
-import { AuthContext } from '../context/AuthContext';
 
 ChartJS.register(
   CategoryScale,
@@ -30,35 +32,37 @@ ChartJS.register(
 );
 
 const ProfilePage = () => {
-  const { user } = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const user = useSelector(selectCurrentUser);
+  const { stats : profileStats, status } = useSelector((state) => state.profile);
+  const [weeklyTrend, setWeeklyTrend] = useState(null); // State for weekly trend data
+    const authToken = useSelector(selectAuthToken); // get token
 
-  // Unconditionally call all hooks
-  const [profileStats, setProfileStats] = useState(null);
-  const [analytics, setAnalytics] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch data from the backend using the logged-in user's ID
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-    fetch(`http://localhost:7000/api/profile/${user._id}/analytics`)
-      .then((res) => res.json())
-      .then((data) => {
-        setAnalytics(data.productivity);
-        setProfileStats(data.profileStats);
-        setLoading(false);
+    if (user?._id && authToken) {
+      // Fetch weekly task data
+      axios.get('http://localhost:7000/token/weeklyTaskData', {
+        headers: { Authorization: `Bearer ${authToken}` }
       })
-      .catch((err) => {
-        console.error("Error fetching analytics:", err);
-        setLoading(false);
+      .then(response => {
+        if (response.data.success) {
+          setWeeklyTrend(response.data.weeklyData);
+        } else {
+          console.error('Failed to fetch weekly task data:', response.data.error);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching weekly task data:', error);
       });
-  }, [user]);
 
-  if (loading) {
-    return <div>Loading...</div>;
+      dispatch(fetchProfileStats());
+    }
+  }, [dispatch, user?._id, authToken]);
+
+  if (status === 'loading') {
+    return <div>Loading profile data...</div>;
   }
+
   if (!user) {
     return <div>Please log in to view your profile.</div>;
   }
@@ -67,19 +71,11 @@ const ProfilePage = () => {
   const xp = profileStats?.xp || 0;
   const level = profileStats?.level || Math.floor(xp / 100) + 1;
   const currentXP = xp % 100;
-  const progressPercent = currentXP; // out of 100
+  const progressPercent = currentXP;
 
-  // Process weekly trend data
-  const weeklyTrend = analytics?.weeklyTrend || { MON: 0, TUE: 0, WED: 0, THU: 0, FRI: 0, SAT: 0, SUN: 0 };
-  const weeklyTrendArray = [
-    weeklyTrend.MON,
-    weeklyTrend.TUE,
-    weeklyTrend.WED,
-    weeklyTrend.THU,
-    weeklyTrend.FRI,
-    weeklyTrend.SAT,
-    weeklyTrend.SUN,
-  ];
+  // Prepare weekly trend data
+  const weeklyTrendData = weeklyTrend || { MON: 0, TUE: 0, WED: 0, THU: 0, FRI: 0, SAT: 0, SUN: 0 }; // Default values
+  const weeklyTrendArray = Object.values(weeklyTrendData); // Convert to array
 
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -108,7 +104,7 @@ const ProfilePage = () => {
     },
   };
 
-  const taskDistribution = analytics?.taskDistribution || { Completed: 0, Pending: 0, Overdue: 0 };
+  const taskDistribution = { Completed: 0, Pending: 0, Overdue: 0 };
   const pieData = {
     labels: ["Completed", "Pending", "Overdue"],
     datasets: [
@@ -130,8 +126,9 @@ const ProfilePage = () => {
       title: { display: true, text: 'Tasks by Status' },
     },
   };
+  
+  let productivityScore = profileStats?.productivity_score; // Get value from profileStats, not analytics
 
-  let productivityScore = analytics?.overallProductivity;
   if (typeof productivityScore !== "number") {
     const totalTasks = weeklyTrendArray.reduce((sum, val) => sum + val, 0);
     productivityScore = Math.min(totalTasks / 70, 1);
@@ -185,14 +182,6 @@ const ProfilePage = () => {
                     valueLabel: { style: { fill: "#333" } } // Similar to `textColor`
                   }}
                 />
-                {/* <GaugeChart 
-                  id="gauge-chart" 
-                  nrOfLevels={20} 
-                  percent={productivityScore} 
-                  textColor="#333" 
-                  needleColor="#ef4444"
-                  arcWidth={0.3}
-                /> */}
                 <p className="profilePage-gauge-label">Overall Productivity</p>
               </div>
             </div>

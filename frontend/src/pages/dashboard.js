@@ -7,11 +7,38 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction"; // Import interaction plugin
 
 
+// -------------------------------------------------------------------
+
+import { useSelector, useDispatch } from 'react-redux';
+import { logout, selectAuthToken } from '../redux/slices/authSlice';
+
+// -------------------------------------------------------------------
 const DashboardPage = () => {
   const navigate = useNavigate();
 
+
+
+// -------------------------------------------------------------------
+
+
+  const dispatch = useDispatch();
+  const token = useSelector(selectAuthToken);
+
+  // Redux-based authentication check
+  useEffect(() => {
+    if (!token) {
+      navigate('/signin');
+    }
+  }, [token, navigate]);
+
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    dispatch(logout());
+
+// -------------------------------------------------------------------
+
+
+
+
     navigate('/signin');
   };
 
@@ -98,13 +125,15 @@ const DashboardPage = () => {
 
       {/* Navigation Buttons */}
 
-      <button
+
+      {/* { isAuthorized? ( */}
+        <button
         onClick={() => navigate('/profile')}
         className="px-6 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 mb-4"
       >
         Go to Profile
       </button>
-
+    {/* ): null} */}
       <button
         onClick={() => navigate('/')}
         className="text-blue-500 hover:underline"
