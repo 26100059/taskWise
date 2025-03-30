@@ -1,5 +1,5 @@
 // src/pages/Dashboard.js
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -11,7 +11,6 @@ import "../styles/dashboard.css";
 import { useDispatch } from "react-redux";
 import { useSelector } from 'react-redux';
 import { logout } from "../redux/authSlice";
-
 
 // Modal Component for task details
 const Modal = ({ task, onClose, onSave }) => {
@@ -121,9 +120,8 @@ const DashboardPage = () => {
   };
 
   // Fetch time slots from the backend using axios
-  const fetchTimeSlots = async () => {
+  const fetchTimeSlots = useCallback(async () => {
     try {
-
       // const res = await axios.get("http://localhost:7000/api/tasks/timeSlots");
       // Make the request with the Authorization header
       const res = await axios.get("http://localhost:7000/testingDB/timeSlots-by-userid", {
@@ -148,7 +146,7 @@ const DashboardPage = () => {
     } catch (error) {
       console.error("Error fetching time slots:", error);
     }
-  };
+  }, [token]);
 
   // Fetch the productivity tip from our suggestions route
   useEffect(() => {
@@ -165,7 +163,7 @@ const DashboardPage = () => {
 
   useEffect(() => {
     fetchTimeSlots();
-  }, [token]);
+  }, [fetchTimeSlots]);
 
   // Handle task form submission
   const handleTaskSubmit = async (e) => {
