@@ -30,9 +30,17 @@
 .dark-mode .navbar,
 .dark-mode .smart-suggestions,
 .dark-mode .add-task {
-  background-color: var(--navbar-bg) !important;
+  background-color: black !important;
 }
 
+.dark-mode .smart-suggestions,
+.dark-mode .add-task{
+  border: 1px solid var(--light-gray);
+}
+
+.dark-mode .navbar{
+  border-bottom: 1px solid var(--light-gray);
+}
 /* Dark mode field labels */
 .dark-mode .add-task label {
   color: white;
@@ -49,6 +57,10 @@
 /* Dark mode smart suggestions inner box */
 .dark-mode .suggestion-box {
   background-color: var(--dark-gray);
+  color: white;
+}
+
+.dark-mode .nav-btn.icon-btn{
   color: white;
 }
 
@@ -103,6 +115,9 @@
   color: black;
 }
 
+.dark-mode .dark-mode-label{
+  color: white;
+}
 /* Logout button styled in red */
 .nav-btn.logout {
   background-color: #e74c3c;
@@ -282,6 +297,9 @@
   background-color: #7f8c8d;
 }
 
+.dark-mode .modal-content{
+  background-color: black;
+}
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .main-container {

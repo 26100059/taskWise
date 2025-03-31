@@ -73,7 +73,8 @@ const DashboardPage = () => {
   const token = useSelector((state) => state.auth.user?.token); // Adjust path if needed
 
   // Dark mode state
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
 
   // Task form state
   const [taskInput, setTaskInput] = useState({

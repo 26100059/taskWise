@@ -1,4 +1,3 @@
-dark mode local storage fix
 dashboard + profile page responsiveness
 
 
