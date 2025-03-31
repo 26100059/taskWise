@@ -9,7 +9,7 @@ import Switch from "react-switch";
 import axios from "axios";
 import "../styles/dashboard.css";
 import { useDispatch } from "react-redux";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 import { logout } from "../redux/authSlice";
 
 // Modal Component for task details
@@ -68,12 +68,10 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const calendarRef = useRef(null);
 
-  //redux
-  // Get the token from Redux state
-  const token = useSelector((state) => state.auth.user?.token); // Adjust path if needed
+  // Redux: Get the token from state
+  const token = useSelector((state) => state.auth.user?.token);
 
   // Dark mode state
-  // const [isDarkMode, setIsDarkMode] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
 
   // Task form state
@@ -92,6 +90,9 @@ const DashboardPage = () => {
 
   // New state for the productivity tip
   const [suggestion, setSuggestion] = useState("");
+
+  // Mobile menu state for hamburger nav
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Helper to format dates for ICS (YYYYMMDDTHHmmssZ)
   const formatICSDate = (date) => {
@@ -123,11 +124,9 @@ const DashboardPage = () => {
   // Fetch time slots from the backend using axios
   const fetchTimeSlots = useCallback(async () => {
     try {
-      // const res = await axios.get("http://localhost:7000/api/tasks/timeSlots");
-      // Make the request with the Authorization header
       const res = await axios.get("http://localhost:7000/testingDB/timeSlots-by-userid", {
         headers: {
-          Authorization: `Bearer ${token}`, // Send token in the Authorization header
+          Authorization: `Bearer ${token}`,
         },
       });
       const formattedSlots = res.data.map((slot) => ({
@@ -176,7 +175,7 @@ const DashboardPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` // Pass the token in the Authorization header
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(taskInput),
       });
@@ -242,11 +241,6 @@ const DashboardPage = () => {
   };
 
   // Dark mode effect
-  // useEffect(() => {
-  //   document.body.classList.toggle("dark-mode", isDarkMode);
-  // }, [isDarkMode]);
-
-  // Update dark mode preference on change
   useEffect(() => {
     document.body.classList.toggle("dark-mode", isDarkMode);
     localStorage.setItem("darkMode", isDarkMode);
@@ -255,7 +249,7 @@ const DashboardPage = () => {
   // Logout handler with redux
   const handleLogout = () => {
     console.log("🚪 Logging out...");
-    dispatch(logout());  // Clear Redux state
+    dispatch(logout());
   };
 
   return (
@@ -269,6 +263,64 @@ const DashboardPage = () => {
             className="brand-image"
           />
         </div>
+        {/* Mobile Navigation */}
+        <div className="mobile-nav">
+          <button
+            className="hamburger-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <i className="fa-solid fa-bars"></i>
+          </button>
+          {mobileMenuOpen && (
+            <div className="mobile-menu">
+              <button
+                className="nav-btn icon-btn export-btn"
+                onClick={() => {
+                  generateICSFile();
+                  setMobileMenuOpen(false);
+                }}
+                title="Export Calendar"
+              >
+                <i className="fa-solid fa-download"></i>
+              </button>
+              <div className="dark-mode-toggle">
+                <span className="dark-mode-label">Dark Mode</span>
+                <Switch
+                  onChange={setIsDarkMode}
+                  checked={isDarkMode}
+                  offColor="#ccc"
+                  onColor="#3b82f6"
+                  uncheckedIcon={false}
+                  checkedIcon={false}
+                  height={22}
+                  width={44}
+                  handleDiameter={18}
+                />
+              </div>
+
+              <button
+                className="nav-btn icon-btn profile-btn"
+                onClick={() => {
+                  navigate("/profile");
+                  setMobileMenuOpen(false);
+                }}
+                title="Profile"
+              >
+                <i className="fa-solid fa-circle-user"></i>
+              </button>
+              <button
+                className="nav-btn logout"
+                onClick={() => {
+                  handleLogout();
+                  setMobileMenuOpen(false);
+                }}
+              >
+                LOG OUT
+              </button>
+            </div>
+          )}
+        </div>
+        {/* Desktop Navigation */}
         <div className="nav-buttons">
           <button
             className="nav-btn icon-btn export-btn"
@@ -279,7 +331,6 @@ const DashboardPage = () => {
           </button>
           <div className="dark-mode-toggle">
             <span className="dark-mode-label">Dark Mode</span>
-
             <Switch
               onChange={setIsDarkMode}
               checked={isDarkMode}

@@ -34,11 +34,11 @@
 }
 
 .dark-mode .smart-suggestions,
-.dark-mode .add-task{
+.dark-mode .add-task {
   border: 1px solid var(--light-gray);
 }
 
-.dark-mode .navbar{
+.dark-mode .navbar {
   border-bottom: 1px solid var(--light-gray);
 }
 /* Dark mode field labels */
@@ -60,10 +60,9 @@
   color: white;
 }
 
-.dark-mode .nav-btn.icon-btn{
+.dark-mode .nav-btn.icon-btn {
   color: white;
 }
-
 
 /* Navbar */
 .navbar {
@@ -71,10 +70,10 @@
   justify-content: space-between;
   align-items: center;
   background-color: var(--light-gray);
-  /* border-bottom: 1px solid #ddd; */
   padding: 10px 20px;
 }
 
+/* Brand Section */
 .brand {
   display: flex;
   align-items: center;
@@ -84,7 +83,7 @@
   height: 40px;
 }
 
-/* Navigation buttons container */
+/* Desktop Navigation buttons container */
 .nav-buttons {
   display: flex;
   align-items: center;
@@ -115,9 +114,10 @@
   color: black;
 }
 
-.dark-mode .dark-mode-label{
+.dark-mode .dark-mode-label {
   color: white;
 }
+
 /* Logout button styled in red */
 .nav-btn.logout {
   background-color: #e74c3c;
@@ -130,12 +130,34 @@
   font-weight: bold;
 }
 
-/* Main Container */
-.main-container {
+/* Mobile Navigation (hidden in desktop) */
+.mobile-nav {
+  display: none;
+}
+
+
+
+/* .main-container {
   display: flex;
   justify-content: space-between;
   padding: 1rem;
   height: 95vh;
+}
+
+.calendar-section {
+  flex: 3;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--light-gray);
+  height: 85vh;
+} */
+
+/* Main Container (desktop layout) */
+.main-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  height: 90vh; /* 100% minus 10vh for navbar */
 }
 
 /* Calendar Section */
@@ -144,9 +166,8 @@
   border-radius: 8px;
   padding: 1rem;
   border: 1px solid var(--light-gray);
-  height: 85vh;
+  height: 100%;
 }
-
 /* Side Panel */
 .side-panel {
   flex: 1;
@@ -297,22 +318,81 @@
   background-color: #7f8c8d;
 }
 
-.dark-mode .modal-content{
+.dark-mode .modal-content {
+  background-color: black;
+}
+
+.dark-mode .mobile-menu{
   background-color: black;
 }
 /* Responsive Adjustments */
 @media (max-width: 768px) {
+  /* Show mobile navigation and hide desktop navigation */
+  .nav-buttons {
+    display: none;
+  }
+  
+  .mobile-nav {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  /* Hamburger button styles */
+  .hamburger-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.8rem;
+    color: black;
+  }
+  
+  .dark-mode .hamburger-btn {
+    color: white;
+  }
+  
+  /* Mobile menu dropdown styles */
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    background: var(--light-gray);
+    position: absolute;
+    top: 40px;
+    /* left: 0; */
+    right: 5px;
+    width: 50vw;
+    padding: 1rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    align-items: center;
+  }
+  
+  .mobile-menu .nav-btn {
+    margin: 0.5rem 0;
+  }
+  .add-task,
+  .smart-suggestions{
+    height: auto;
+  }
+  
+  /* Increase calendar height for mobile view */
+  .calendar-section {
+    width: 100%;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+  
+  /* Adjust main container for mobile */
   .main-container {
     flex-direction: column;
     height: auto;
   }
   
-  .calendar-section {
-    height: auto;
-    margin-bottom: 1rem;
-  }
-  
   .side-panel {
     height: auto;
+  }
+  
+  .calendar-section {
+    margin-bottom: 1rem;
   }
 }
