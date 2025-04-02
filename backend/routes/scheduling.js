@@ -7,8 +7,6 @@ const TimeSlot = require('../models/TimeSlot');
 const { getTimeSlotsByUserId, deleteTimeSlotsByUserId, createNewTimeSlots } = require('../dbFunctions'); // Import from dbFunctions.js
 const authenticateToken = require('../authMiddleware'); // Import the middleware for redux state
 
-const fs = require('fs');
-
 
 const API_KEY = "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";
 const MODEL_NAME = "deepseek-r1-distill-llama-70b";
@@ -39,40 +37,60 @@ function extractJSON(content) {
 
 // Function to generate LLM prompt
 const generatePrompt = (newTask, existingTimeSlots, info) => `
-You are an intelligent scheduling assistant. Your task is to schedule a new task into a user’s existing calendar while ensuring efficiency and avoiding conflicts. Follow the rules carefully and return only the updated schedule in a valid JSON format. Make sure that your final answer includes previous timeslots as well as the new ones you made.
+You are an intelligent scheduling assistant. Your task is to schedule a new task into a user’s existing calendar while ensuring efficiency and avoiding conflicts. Follow the rules carefully and return only the updated schedule in a valid JSON format.
 
-### **Scheduling Rules:**
-1. **No Overlaps:** Ensure the new task does not conflict with existing tasks.
-2. **Duration of new timeslots:** Strictly ensure the duration of the new timeslots you make must equal the duration of the input task. 
-3. **Deadline Priority:** The task must be scheduled before the deadline.
-4. **Current Time:** The new timeslots generated must have a time after the current_time provided.
-5. **Task Splitting:** For long tasks you can break them into multiple time slots and even seperate days as long as they fit before deadline.
-6. **User Preferences:** If additional information is provided, prioritize it over general rules.
-7. **Strict JSON Output:** The response must be a **valid JSON array** with the format shown below.
+*IMPORTANT:*  
+- You *must include all existing time slots as they are* and only add the newly scheduled ones.  
+- *Do not modify, remove, or alter* any existing time slots.  
+- The total duration of the new timeslots *must exactly match* the duration of the input task.  
+ 
 
+*Note:* Duration is in hours.
 
 ---
 
-### **User's Input:**
-\`\`\`json
+### *Scheduling Rules:*
+1. *No Overlaps:* Ensure the new task does not conflict with existing tasks.
+2. *Exact Duration Matching:* The total duration of the new timeslots *must exactly match* the duration of the input task.  
+3. *Deadline Priority:* The task must be fully scheduled before the deadline.
+4. *Current Time Constraint:* The new timeslots generated *must start after* the given current_time.
+5. *Task Splitting (if needed):*  
+   - If the task duration is *greater than 2 hours, you **can* split it into multiple time slots across different days *as long as the total duration remains correct* and it fits before the deadline.  
+6. ** User Preferences (Highly Important, Must Follow):**  
+   - If the user specifies preferred days (e.g., "Tuesday and Thursday only"), *you must check whether a given ISO timestamp falls on those days before using it.*  
+   - Example: If "info": "Tuesday and Thursday only", *you must only schedule tasks on timestamps that match those days.*  
+7. *Strict JSON Output:* The response must be a *valid JSON array* in the format below.  
+8. *Retain Previous Time Slots:*  
+   - *All existing time slots must be included* in the output without changes.  
+   - *Only add new time slots* to accommodate the new task.
+
+
+   ### Before finalizing the answer:
+1. Double-check that *all existing time slots* are included in your response without any changes.
+2. Verify that the sum of the durations of the new time slots matches the total duration of the task exactly.
+
+---
+
+### *User's Input:*
+\\\`json
 {
-  "current_time" : ${new Date().toISOString()},
+  "current_time": "${new Date().toISOString()}",
   "newTask": {
     "task_id": "${newTask._id}",
     "duration": ${newTask.duration},
-    "deadline": ${new Date(newTask.deadline).toISOString()}
+    "deadline": "${new Date(newTask.deadline).toISOString()}"
   },
   "existingTimeSlots": ${JSON.stringify(existingTimeSlots, null, 2)},
   "info": "${info}"
 }
-\`\`\`
+
 
 ---
 
-### **Expected Output Format:**
-Return only a valid JSON array of time slots. Make sure that previous timeslots are also there added with new ones you made. No extra text, explanations, or comments.
+### **Expected Output Format:### **
+Return only a valid JSON array of time slots. Make sure previous timeslots remain unchanged and the new ones you create strictly follow the rules. No extra text, explanations, or comments.
 
-\`\`\`json
+\\\`json
 [
   {
     "task_id": "<task_id>",
@@ -80,7 +98,6 @@ Return only a valid JSON array of time slots. Make sure that previous timeslots 
     "end_time": "<ISO timestamp>"
   }
 ]
-\`\`\`
 `;
 
 
@@ -164,7 +181,8 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
       body: JSON.stringify({
         model: MODEL_NAME,
         messages: [{ role: "user", content: llmPrompt }],
-        max_tokens: 4096
+        max_tokens: 6000,
+        temperature: 0.2
       })
     });
 
@@ -174,10 +192,11 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
     // Extract the raw content (text response from LLM)
     const llmOutput = llmJson.choices?.[0]?.message?.content || "";
 
+    // console.log("--line before llm out put--")
+    // console.log(llmOutput)
+
     // Extract JSON from the response content
     const newTimeSlots = extractJSON(llmOutput);
-
-
 
     // console.log("--line before new Time slots--")
     console.log(newTimeSlots);
