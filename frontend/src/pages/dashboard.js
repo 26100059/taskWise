@@ -185,7 +185,10 @@ const DashboardPage = () => {
         setTaskInput({ name: "", deadline: "", duration: "", info: "" });
         fetchTimeSlots();
       } else {
-        alert("Failed to add task");
+        // Try to read the error response text from the server
+        const errorText = await response.text();
+        console.error("Failed to add task:", response.status, errorText);
+        alert(`Failed to add task: ${response.status} - ${errorText}`);
       }
     } catch (error) {
       console.error("Error adding task:", error);
