@@ -6,17 +6,28 @@ const User = require('../models/User');
 const UserProfileStats = require('../models/UserProfileStats');
 
 // Helper: Get current week's Monday and Sunday
+
 function getCurrentWeekBoundaries() {
   const now = new Date();
+  console.log("Current date:", now);
+
   const day = now.getDay() === 0 ? 7 : now.getDay();
+  console.log("Day of the week (1=Mon, 7=Sun):", day);
+
   const monday = new Date(now);
   monday.setDate(now.getDate() - (day - 1));
   monday.setHours(0, 0, 0, 0);
+  console.log("Monday:", monday);
+
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
   sunday.setHours(23, 59, 59, 999);
+  console.log("Sunday:", sunday);
+
   return { monday, sunday };
 }
+
+  
 
 // GET /api/profile/:userId/analytics   
 router.get('/:userId/analytics', async (req, res) => {
@@ -79,23 +90,29 @@ router.get('/:userId/analytics', async (req, res) => {
   }
 });
 
+
+
+
+// NEW FUNCTION ADDED BELOW
+
+
 // New function to calculate cumulative time of completed tasks
 router.get('/:userId/commulative', async (req, res) => {
   try {
     const userId = req.params.userId; // Get userId from req.params
 
-    console.log("User ID:", userId);
+    // console.log("User ID:", userId);
 
     // Find all tasks with status 'done' for the given user
     const completedTasks = await Task.find({ user_id: userId, status: 'done' });
-    console.log("Completed tasks:", completedTasks);
+    // console.log("Completed tasks:", completedTasks);
 
     // Calculate cumulative time in hours
     const cumulativeTime = completedTasks.reduce((total, task) => {
       return total + (task.duration || 0); // Assuming 'time_spent' is in hours
     }, 0);
 
-    console.log("Cumulative time:", cumulativeTime);
+    // console.log("Cumulative time:", cumulativeTime);
 
     res.json({ cumulativeTime });
   } catch (error) {
@@ -107,13 +124,17 @@ router.get('/:userId/commulative', async (req, res) => {
 router.get('/:userId/weekly-completed-tasks', async (req, res) => {
   try {
       const { userId } = req.params;
-      const { start, end } = getCurrentWeekStartEnd();
+      const { monday, sunday } = getCurrentWeekBoundaries();  // Use monday and sunday
+      console.log("Start of week:", monday); // Debugging line
+      console.log("End of week:", sunday); // Debugging line
 
       const completedTasks = await Task.find({
           user_id: userId,
           status: 'done',
-          updated_at: { $gte: start, $lte: end }
+          updated_at: { $gte: monday, $lte: sunday }   // Include updated_at
       });
+
+      console.log("Completed tasks in this week:", completedTasks); // Debugging line
 
       const dailyCounts = Array(7).fill(0); // Initialize array for each day of the week
 

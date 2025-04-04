@@ -31,6 +31,7 @@ ChartJS.register(
 const ProfilePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [cumulativeTime, setCumulativeTime] = useState(0);
+  const [weeklyTrendArray, setWeeklyTrendArray] = useState([0, 0, 0, 0, 0, 0, 0]);
   
 
   // Read dark mode preference from local storage on mount
@@ -44,7 +45,6 @@ const ProfilePage = () => {
   const user = useSelector((state) => state.auth.user);
   const userName = user.name;
   const userId = user.userId;
-  // console.log("User ID in the followign :", userId); // Debugging line
   useEffect(() => {
     const fetchCumulativeTime = async () => {
       if (userId) {  // Use the local userId state
@@ -62,17 +62,31 @@ const ProfilePage = () => {
     fetchCumulativeTime();
   }, [userId]); // Depend on userId
   // console.log("Cumulative Time:", cumulativeTime); // Debugging line
-  var xp = cumulativeTime * 10; 
+  const xp = cumulativeTime * 10; 
 
 
 
-  var level = Math.floor(xp / 100) + 1;
-  var currentXP = xp % 100;
-  var progressPercent = currentXP;
+  const level = Math.floor(xp / 100) + 1;
+  const currentXP = xp % 100;
+  const progressPercent = currentXP;
 
-  // Dummy weekly trend data for tasks completed
-  
-  var weeklyTrendArray = [0,0,0,0,0,0,0];
+  useEffect(() => {
+    const fetchWeeklyTrend = async () => {
+      if (userId) {
+        try {
+          const response = await axios.get(`http://localhost:7000/profilePage/${userId}/weekly-completed-tasks`);
+          setWeeklyTrendArray(response.data);
+        } catch (error) {
+          console.error("Error fetching weekly trend:", error);
+        }
+      } else {
+        console.warn("User ID is not available.");
+      }
+    };
+
+    fetchWeeklyTrend();
+  }, [userId]);
+
 
   // Adjust font size based on screen width
   const getFontSize = () => {
