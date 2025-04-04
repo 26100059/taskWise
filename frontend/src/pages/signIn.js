@@ -12,8 +12,17 @@ const SignInPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+
+  // Notification state: { type: 'success' | 'failure', message: string }
+  const [notification, setNotification] = useState(null);
+
+  // Function to display notification for 2 seconds with a custom message and type
+  const showNotification = (message, type) => {
+    setNotification({ type, message });
+    setTimeout(() => {
+      setNotification(null);
+    }, 2000);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,8 +31,6 @@ const SignInPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
 
     try {
       const response = await fetch(`${API_BASE}/userslogin`, {
@@ -39,19 +46,37 @@ const SignInPage = () => {
           token: data.token,
           name: data.name  // ✅ Pass 'name' from backend response
         })); // Store in Redux
-        setSuccessMessage('Login successful! Redirecting...');
+        showNotification('Login successful! Redirecting...', 'success');
         setTimeout(() => navigate('/dashboard'), 500);
       } else {
-        setErrorMessage(data.error || 'Failed to log in. Please try again.');
+        showNotification(data.error || 'Failed to log in. Please try again.', 'failure');
       }
     } catch (error) {
       console.error('Error:', error);
-      setErrorMessage('An unexpected error occurred. Please try again.');
+      showNotification('An unexpected error occurred. Please try again.', 'failure');
     }
   };
 
   return (
     <div className="signIn-container">
+      {/* Notification Banner */}
+      {notification && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            padding: '10px 20px',
+            backgroundColor: notification.type === 'success' ? 'green' : 'red',
+            color: '#fff',
+            borderRadius: '5px',
+            zIndex: 1000,
+          }}
+        >
+          {notification.message}
+        </div>
+      )}
+
       <div className="signIn-main-content">
         <div className="signIn-left-section">
           <img src={brandImage} alt="Brand Name and Tagline" className="signIn-brand-image" />
@@ -63,8 +88,6 @@ const SignInPage = () => {
             <p className="signUp-signin-prompt">
               Don't have an account? <a href="/signup">Sign Up</a>
             </p>
-            {errorMessage && <p className="signIn-error">{errorMessage}</p>}
-            {successMessage && <p className="signIn-success">{successMessage}</p>}
             <form onSubmit={handleSubmit}>
               <label htmlFor="email">Email Address</label>
               <input

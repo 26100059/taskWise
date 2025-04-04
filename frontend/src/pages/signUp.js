@@ -18,6 +18,17 @@ const SignUpPage = () => {
     password: '',
     confirmPassword: ''
   });
+
+  // Notification state: { type: 'success' | 'failure', message: string }
+  const [notification, setNotification] = useState(null);
+
+  // Function to display notification for 2 seconds with a custom message and type
+  const showNotification = (message, type) => {
+    setNotification({ type, message });
+    setTimeout(() => {
+      setNotification(null);
+    }, 2000);
+  };
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,12 +43,12 @@ const SignUpPage = () => {
     
     // Basic validation
     if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
-      alert("Please fill out all fields.");
+      showNotification("Please fill out all fields.", 'failure');
       return;
     }
     
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match. Please try again.");
+      showNotification("Passwords do not match. Please try again.", 'failure');
       return;
     }
     
@@ -56,28 +67,46 @@ const SignUpPage = () => {
       });
   
       if (response.ok) {
-        alert('User registered successfully!');
+        showNotification('User registered successfully!', 'success');
         navigate('/');
       } else {
         const data = await response.json();
         if (data.error) {
-          alert(data.error);
+          showNotification(data.error, 'failure');
         } else {
-          alert('Failed to register user. Please try again.');
+          showNotification('Failed to register user. Please try again.', 'failure');
         }
       }
     } catch (error) {
       console.error('Error:', error);
       if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-        alert('Unable to connect to the server. Please check your internet connection or try again later.');
+        showNotification('Unable to connect to the server. Please check your internet connection or try again later.', 'failure');
       } else {
-        alert('An unexpected error occurred. Please try again.');
+        showNotification('An unexpected error occurred. Please try again.', 'failure');
       }
     }
   };
   
   return (
     <div className="signUp-container">
+      {/* Notification Banner */}
+      {notification && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            padding: '10px 20px',
+            backgroundColor: notification.type === 'success' ? 'green' : 'red',
+            color: '#fff',
+            borderRadius: '5px',
+            zIndex: 1000,
+          }}
+        >
+          {notification.message}
+        </div>
+      )}
+
       <div className="signUp-main-content">
         {/* Left Section: Brand Image */}
         <div className="signUp-left-section">

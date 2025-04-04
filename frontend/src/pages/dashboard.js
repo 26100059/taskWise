@@ -97,6 +97,17 @@ const DashboardPage = () => {
   // Mobile menu state for hamburger nav
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Notification state: { type: 'success' | 'failure', message: string }
+  const [notification, setNotification] = useState(null);
+
+  // Function to display notification for 2 seconds with a custom message and type
+  const showNotification = (message, type) => {
+    setNotification({ type, message });
+    setTimeout(() => {
+      setNotification(null);
+    }, 2000);
+  };
+
   // Helper to format dates for ICS (YYYYMMDDTHHmmssZ)
   const formatICSDate = (date) => {
     return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
@@ -181,24 +192,24 @@ const DashboardPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(taskInput),
       });
 
       if (response.ok) {
-        alert("Task added successfully!");
+        showNotification("Task added successfully!", "success");
         setTaskInput({ name: "", deadline: "", duration: "", info: "" });
         fetchTimeSlots();
       } else {
         // Try to read the error response text from the server
         const errorText = await response.text();
         console.error("Failed to add task:", response.status, errorText);
-        alert(`Failed to add task: ${response.status} - ${errorText}`);
+        showNotification(`Failed to add task: ${response.status} - ${errorText}`, "failure");
       }
     } catch (error) {
       console.error("Error adding task:", error);
-      alert("Error adding task");
+      showNotification("Error adding task", "failure");
     } finally {
       // Reset loading state
       setLoading(false);
@@ -233,7 +244,7 @@ const DashboardPage = () => {
   const handleSaveStatus = async (newStatus) => {
     const taskId = selectedEvent.extendedProps.taskId;
     if (!taskId) {
-      alert("Task ID not found.");
+      showNotification("Task ID not found.", "failure");
       return;
     }
     try {
@@ -243,12 +254,12 @@ const DashboardPage = () => {
           status: newStatus ? "done" : "pending",
         }
       );
-      alert("Task status updated!");
+      showNotification("Task status updated!", "success");
       setSelectedEvent(null);
       fetchTimeSlots();
     } catch (error) {
       console.error("Error updating task status:", error);
-      alert("Failed to update task status");
+      showNotification("Failed to update task status", "failure");
     }
   };
 
@@ -266,6 +277,24 @@ const DashboardPage = () => {
 
   return (
     <div className={`dashboard ${isDarkMode ? "dark-mode" : ""}`}>
+      {/* Notification Banner */}
+      {notification && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            padding: '10px 20px',
+            backgroundColor: notification.type === 'success' ? 'green' : 'red',
+            color: '#fff',
+            borderRadius: '5px',
+            zIndex: 1000,
+          }}
+        >
+          {notification.message}
+        </div>
+      )}
+
       {/* Navbar */}
       <nav className="navbar">
         <div className="brand">
@@ -465,6 +494,3 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
-
-
-
