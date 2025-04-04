@@ -1,6 +1,4 @@
-dashboard responsiveness fix
 profile page backend
-model fine tuning
 alerts and loaders
 
 env File
