@@ -1,5 +1,6 @@
 // src/pages/ProfilePage.js
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Line as ChartLine, Pie } from 'react-chartjs-2';
 import { Line as ProgressBar } from 'rc-progress';
 import {
@@ -14,6 +15,7 @@ import {
   Legend,
 } from 'chart.js';
 import '../styles/profilePage.css';
+import axios from 'axios';
 
 ChartJS.register(
   CategoryScale,
@@ -28,6 +30,12 @@ ChartJS.register(
 
 const ProfilePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [cumulativeTime, setCumulativeTime] = useState(0);
+  const [weeklyTrendArray, setWeeklyTrendArray] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [completedTasks, setCompletedTasks] = useState(0);
+  const [pendingTasks, setPendingTasks] = useState(0);
+  const [overdueTasks, setOverdueTasks] = useState(0);
+  
 
   // Read dark mode preference from local storage on mount
   useEffect(() => {
@@ -36,15 +44,51 @@ const ProfilePage = () => {
     document.body.classList.toggle("dark-mode", darkModePref);
   }, []);
 
-  // Dummy user data
-  const userName = "John Doe";
-  const xp = 230;
+
+  const user = useSelector((state) => state.auth.user);
+  const userName = user.name;
+  const userId = user.userId;
+  useEffect(() => {
+    const fetchCumulativeTime = async () => {
+      if (userId) {  // Use the local userId state
+        try {
+          const response = await axios.get(`http://localhost:7000/profilePage/${userId}/commulative`);
+          setCumulativeTime(response.data.cumulativeTime);
+        } catch (error) {
+          console.error("Error fetching cumulative time:", error);
+        }
+      } else {
+        console.warn("User ID is not available.");
+      }
+    };
+
+    fetchCumulativeTime();
+  }, [userId]);
+  const xp = cumulativeTime * 10; 
+
+
+
   const level = Math.floor(xp / 100) + 1;
   const currentXP = xp % 100;
-  const progressPercent = currentXP; // out of 100
+  const progressPercent = currentXP;
 
-  // Dummy weekly trend data for tasks completed
-  const weeklyTrendArray = [3, 5, 2, 6, 4, 7, 1];
+  useEffect(() => {
+    const fetchWeeklyTrend = async () => {
+      if (userId) {
+        try {
+          const response = await axios.get(`http://localhost:7000/profilePage/${userId}/weekly-completed-tasks`);
+          setWeeklyTrendArray(response.data);
+        } catch (error) {
+          console.error("Error fetching weekly trend:", error);
+        }
+      } else {
+        console.warn("User ID is not available.");
+      }
+    };
+
+    fetchWeeklyTrend();
+  }, [userId]);
+
 
   // Adjust font size based on screen width
   const getFontSize = () => {
@@ -113,7 +157,27 @@ const ProfilePage = () => {
     ],
   };
 
-  const taskDistribution = { Completed: 5, Pending: 3, Overdue: 2 };
+  useEffect(() => {
+    const fetchTaskSummary = async () => {
+      if (userId) {
+        try {
+          const response = await axios.get(`http://localhost:7000/profilePage/${userId}/task-summary`);
+          setCompletedTasks(response.data.completed);
+          setPendingTasks(response.data.pending);
+          setOverdueTasks(response.data.overdue);
+        } catch (error) {
+          console.error("Error fetching task summary:", error);
+        }
+      } else {
+        console.warn("User ID is not available.");
+      }
+    };
+
+    fetchTaskSummary();
+  }, [userId]);
+
+
+  const taskDistribution = { Completed: completedTasks, Pending: pendingTasks, Overdue: overdueTasks };
   const pieData = {
     labels: ["Completed", "Pending", "Overdue"],
     datasets: [
