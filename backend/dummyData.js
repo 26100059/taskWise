@@ -5,8 +5,10 @@ const Task = require('./models/Task');
 const TimeSlot = require('./models/TimeSlot');
 const UserProfileStats = require('./models/UserProfileStats');
 
-// Define your connection string directly
-const uri = "mongodb+srv://taskWiseDB:taskWiseAdmin@taskwisedb.d4zpp.mongodb.net/?retryWrites=true&w=majority&appName=taskWiseDB";
+require('dotenv').config();
+
+// Define your connection
+const uri = process.env.MONGO_URI;
 
 const connect = async () => {
   try {

@@ -14,8 +14,10 @@ const UserProfileStats = require('../models/UserProfileStats');
 const {getTimeSlotsByUserId} = require('../dbFunctions'); // Import from dbFunctions.js
 const authenticateToken = require('../authMiddleware'); // Import the middleware for redux state
 
+require('dotenv').config();
+
 //important for login
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key'; // Replace with a strong secret key
+const JWT_SECRET = process.env.JWT_SECRET;
 
 /* ===== USERS CRUD ===== */
 // Get all users

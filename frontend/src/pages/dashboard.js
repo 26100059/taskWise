@@ -12,6 +12,9 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { logout } from "../redux/authSlice";
 
+//API BASE 
+const API_BASE = process.env.REACT_APP_API_BASE_URL;
+
 // Modal Component for task details
 const Modal = ({ task, onClose, onSave }) => {
   const [doneStatus, setDoneStatus] = useState(task.extendedProps.status === "done");
@@ -138,7 +141,7 @@ const DashboardPage = () => {
   // Fetch time slots from the backend using axios
   const fetchTimeSlots = useCallback(async () => {
     try {
-      const res = await axios.get("http://localhost:7000/testingDB/timeSlots-by-userid", {
+      const res = await axios.get(`${API_BASE}/testingDB/timeSlots-by-userid`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -166,7 +169,7 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchSuggestion = async () => {
       try {
-        const response = await axios.get("http://localhost:7000/api/suggestions");
+        const response = await axios.get(`${API_BASE}/api/suggestions`);
         setSuggestion(response.data.suggestion);
       } catch (error) {
         console.error("Error fetching suggestion:", error);
@@ -188,7 +191,7 @@ const DashboardPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:7000/api/scheduling/schedule-task", {
+      const response = await fetch(`${API_BASE}/api/scheduling/schedule-task`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -223,7 +226,7 @@ const DashboardPage = () => {
     const updatedEnd = event.end ? event.end.toISOString() : updatedStart;
     try {
       await axios.put(
-        `http://localhost:7000/api/tasks/timeSlots/${event.id}`,
+        `${API_BASE}/api/tasks/timeSlots/${event.id}`,
         {
           start_time: updatedStart,
           end_time: updatedEnd,
@@ -249,7 +252,7 @@ const DashboardPage = () => {
     }
     try {
       await axios.put(
-        `http://localhost:7000/api/tasks/mark-done/${taskId}`,
+        `${API_BASE}/api/tasks/mark-done/${taskId}`,
         {
           status: newStatus ? "done" : "pending",
         }

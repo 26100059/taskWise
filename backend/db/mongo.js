@@ -1,8 +1,9 @@
 // db/mongo.js
 const mongoose = require('mongoose');
-// require('dotenv').config(); // Ensure environment variables are loaded
 
-const uri = process.env.MONGO_URI || "mongodb+srv://taskWiseDB:taskWiseAdmin@taskwisedb.d4zpp.mongodb.net/?retryWrites=true&w=majority&appName=taskWiseDB";
+require('dotenv').config(); // Ensure environment variables are loaded
+
+const uri = process.env.MONGO_URI;
 
 const connectToDatabase = async () => {
   try {

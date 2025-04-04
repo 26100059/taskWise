@@ -6,7 +6,8 @@ import { loginSuccess } from '../redux/authSlice';
 import "../styles/signInPage.css";
 import brandImage from '../assets/brandname.png';
 
-const API_BASE = 'http://localhost:7000/testingDB';
+
+const API_BASE = process.env.REACT_APP_API_BASE_URL
 
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const SignInPage = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_BASE}/userslogin`, {
+      const response = await fetch(`${API_BASE}/testingDB/userslogin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -6,7 +6,7 @@ import "../styles/signUpPage.css"; // Using our updated sign-up CSS
 // Import the brand image (which includes the brand name and tagline)
 import brandImage from '../assets/brandname.png';
 
-const API_BASE = 'http://localhost:7000/testingDB';
+const API_BASE = process.env.REACT_APP_API_BASE_URL
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ const SignUpPage = () => {
     };
     
     try {
-      const response = await fetch(`${API_BASE}/usersregister`, {
+      const response = await fetch(`${API_BASE}/testingDB/usersregister`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

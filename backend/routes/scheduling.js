@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-// const dotenv = require('dotenv');
 const Task = require('../models/Task');
 const TimeSlot = require('../models/TimeSlot');
 const { getTimeSlotsByUserId, deleteTimeSlotsByUserId, createNewTimeSlots } = require('../dbFunctions'); // Import from dbFunctions.js
 const authenticateToken = require('../authMiddleware'); // Import the middleware for redux state
 
 
-const API_KEY = "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";
+require('dotenv').config();
+
+const API_KEY = process.env.API_KEY;
+
 const MODEL_NAME = "deepseek-r1-distill-llama-70b";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
@@ -42,7 +44,8 @@ You are an intelligent scheduling assistant. Your task is to schedule a new task
 *IMPORTANT:*  
 - You *must include all existing time slots as they are* and only add the newly scheduled ones.  
 - *Do not modify, remove, or alter* any existing time slots.  
-- The total duration of the new timeslots *must exactly match* the duration of the input task.  
+- The total duration of the new timeslots *must exactly match* the duration of the input task.
+- If availability is not limited, distribute a task's time slots over multiple days instead of scheduling them all on the same day.
  
 
 *Note:* Duration is in hours.
@@ -105,7 +108,7 @@ async function replaceTimeSlots(newTimeSlots, userId, session) {
   try {
     // Step 1: Delete all time slots associated with the taskId (or userId, as needed) within the session
     // Assuming task_id is related to user_id, and you want to delete based on task_id
-    await deleteTimeSlotsByUserId(userId, session);
+    const deletedCount = await deleteTimeSlotsByUserId(userId, session);
 
     // Step 2: Ensure newTimeSlots is an array of objects
     if (typeof newTimeSlots === "string") {
@@ -117,7 +120,9 @@ async function replaceTimeSlots(newTimeSlots, userId, session) {
     }
 
     // Step 3: Create new time slots for the user only
-    await createNewTimeSlots(newTimeSlots, session);
+    const createdCount = await createNewTimeSlots(newTimeSlots, session);
+    // await createNewTimeSlots(newTimeSlots, session);
+    if (deletedCount > createdCount) throw new Error("Model failed to generate valid response");
 
     console.log("Successfully replaced time slots.");
   } catch (error) {
@@ -161,8 +166,6 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
       task_id: slot.task_id._id,  // Only include task_id as ObjectId
       start_time: slot.start_time,
       end_time: slot.end_time,
-      created_at: slot.created_at,
-      updated_at: slot.updated_at,
     }));
 
     console.log(formattedTimeSlots);
@@ -200,7 +203,6 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
 
     // console.log("--line before new Time slots--")
     console.log(newTimeSlots);
-
 
     // Step 4: Replace time slots within transaction
     await replaceTimeSlots(newTimeSlots, userId, session);

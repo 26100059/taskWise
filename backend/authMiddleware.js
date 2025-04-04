@@ -1,7 +1,11 @@
 // authMiddleware.js
 
+
+//important for login
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key'; // Replace with a strong secret key
+require('dotenv').config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware to authenticate tokens
 const authenticateToken = (req, res, next) => {
@@ -14,11 +18,6 @@ const authenticateToken = (req, res, next) => {
     if (err) return res.status(403).json({ error: "Invalid token" });
 
     req.user = decoded; // Attach the decoded payload to the request object
-
-    // Now you can access the decoded values (userId, name) from req.user
-    // console.log("USER ID IN AUTH ", req.user.userId);    // User ID
-    // console.log("USER NAME IN AUTH ", req.user.name);      // User Name
-
     next(); // Proceed to the next middleware or route handler
   });
 };

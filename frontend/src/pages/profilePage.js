@@ -17,6 +17,8 @@ import {
 import '../styles/profilePage.css';
 import axios from 'axios';
 
+const API_BASE = process.env.REACT_APP_API_BASE_URL
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -52,7 +54,7 @@ const ProfilePage = () => {
     const fetchCumulativeTime = async () => {
       if (userId) {  // Use the local userId state
         try {
-          const response = await axios.get(`http://localhost:7000/profilePage/${userId}/commulative`);
+          const response = await axios.get(`${API_BASE}/profilePage/${userId}/commulative`);
           setCumulativeTime(response.data.cumulativeTime);
         } catch (error) {
           console.error("Error fetching cumulative time:", error);
@@ -76,7 +78,7 @@ const ProfilePage = () => {
     const fetchWeeklyTrend = async () => {
       if (userId) {
         try {
-          const response = await axios.get(`http://localhost:7000/profilePage/${userId}/weekly-completed-tasks`);
+          const response = await axios.get(`${API_BASE}/profilePage/${userId}/weekly-completed-tasks`);
           setWeeklyTrendArray(response.data);
         } catch (error) {
           console.error("Error fetching weekly trend:", error);
@@ -161,7 +163,7 @@ const ProfilePage = () => {
     const fetchTaskSummary = async () => {
       if (userId) {
         try {
-          const response = await axios.get(`http://localhost:7000/profilePage/${userId}/task-summary`);
+          const response = await axios.get(`${API_BASE}/profilePage/${userId}/task-summary`);
           setCompletedTasks(response.data.completed);
           setPendingTasks(response.data.pending);
           setOverdueTasks(response.data.overdue);
