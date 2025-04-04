@@ -9,21 +9,13 @@ const UserProfileStats = require('../models/UserProfileStats');
 
 function getCurrentWeekBoundaries() {
   const now = new Date();
-  console.log("Current date:", now);
-
   const day = now.getDay() === 0 ? 7 : now.getDay();
-  console.log("Day of the week (1=Mon, 7=Sun):", day);
-
   const monday = new Date(now);
   monday.setDate(now.getDate() - (day - 1));
   monday.setHours(0, 0, 0, 0);
-  console.log("Monday:", monday);
-
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
   sunday.setHours(23, 59, 59, 999);
-  console.log("Sunday:", sunday);
-
   return { monday, sunday };
 }
 
@@ -151,6 +143,40 @@ router.get('/:userId/weekly-completed-tasks', async (req, res) => {
       res.status(500).json({ error: error.message });
   }
 });
+
+router.get('/:userId/task-summary', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Calculate total tasks
+    const totalTasks = await Task.countDocuments({ user_id: userId });
+
+    // Calculate completed tasks
+    const completedTasks = await Task.countDocuments({ user_id: userId, status: 'done' });
+
+    // Calculate overdue tasks
+    const now = new Date();
+    const overdueTasks = await Task.countDocuments({
+      user_id: userId,
+      status: 'pending',
+      deadline: { $lt: now }
+    });
+
+    // Calculate pending tasks
+    const pendingTasks = totalTasks - completedTasks - overdueTasks;
+
+    res.json({
+      completed: completedTasks,
+      pending: pendingTasks,
+      overdue: overdueTasks
+    });
+
+  } catch (error) {
+    console.error("Error calculating task summary:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 
 module.exports = router;

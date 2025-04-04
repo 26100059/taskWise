@@ -32,6 +32,9 @@ const ProfilePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [cumulativeTime, setCumulativeTime] = useState(0);
   const [weeklyTrendArray, setWeeklyTrendArray] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [completedTasks, setCompletedTasks] = useState(0);
+  const [pendingTasks, setPendingTasks] = useState(0);
+  const [overdueTasks, setOverdueTasks] = useState(0);
   
 
   // Read dark mode preference from local storage on mount
@@ -155,7 +158,27 @@ const ProfilePage = () => {
     ],
   };
 
-  const taskDistribution = { Completed: 5, Pending: 3, Overdue: 2 };
+  useEffect(() => {
+    const fetchTaskSummary = async () => {
+      if (userId) {
+        try {
+          const response = await axios.get(`http://localhost:7000/profilePage/${userId}/task-summary`);
+          setCompletedTasks(response.data.completed);
+          setPendingTasks(response.data.pending);
+          setOverdueTasks(response.data.overdue);
+        } catch (error) {
+          console.error("Error fetching task summary:", error);
+        }
+      } else {
+        console.warn("User ID is not available.");
+      }
+    };
+
+    fetchTaskSummary();
+  }, [userId]);
+
+
+  const taskDistribution = { Completed: completedTasks, Pending: pendingTasks, Overdue: overdueTasks };
   const pieData = {
     labels: ["Completed", "Pending", "Overdue"],
     datasets: [
