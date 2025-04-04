@@ -20,6 +20,9 @@ app.use("/api/tasks", require("./routes/tasks"));
 app.use("/api/scheduling", require("./routes/scheduling"));
 app.use("/api/suggestions", require("./routes/suggestions"));
 
+// Mount profile routes
+app.use("/profilePage", require("./routes/profilePage"));
+
 connectToDatabase()
   .then(() => {
     const PORT = process.env.PORT || 7000;

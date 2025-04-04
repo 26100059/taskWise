@@ -79,4 +79,57 @@ router.get('/:userId/analytics', async (req, res) => {
   }
 });
 
+// New function to calculate cumulative time of completed tasks
+router.get('/:userId/commulative', async (req, res) => {
+  try {
+    const userId = req.params.userId; // Get userId from req.params
+
+    console.log("User ID:", userId);
+
+    // Find all tasks with status 'done' for the given user
+    const completedTasks = await Task.find({ user_id: userId, status: 'done' });
+    console.log("Completed tasks:", completedTasks);
+
+    // Calculate cumulative time in hours
+    const cumulativeTime = completedTasks.reduce((total, task) => {
+      return total + (task.duration || 0); // Assuming 'time_spent' is in hours
+    }, 0);
+
+    console.log("Cumulative time:", cumulativeTime);
+
+    res.json({ cumulativeTime });
+  } catch (error) {
+    console.error("Error calculating cumulative time:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/:userId/weekly-completed-tasks', async (req, res) => {
+  try {
+      const { userId } = req.params;
+      const { start, end } = getCurrentWeekStartEnd();
+
+      const completedTasks = await Task.find({
+          user_id: userId,
+          status: 'done',
+          updated_at: { $gte: start, $lte: end }
+      });
+
+      const dailyCounts = Array(7).fill(0); // Initialize array for each day of the week
+
+      completedTasks.forEach(task => {
+          const taskDate = new Date(task.updated_at);
+          const dayOfWeek = taskDate.getDay(); // 0 (Sunday) to 6 (Saturday)
+          const dayIndex = (dayOfWeek + 6) % 7; // Convert to Monday(0) to Sunday(6)
+          dailyCounts[dayIndex]++;
+      });
+
+      res.json(dailyCounts);
+  } catch (error) {
+      console.error("Error fetching weekly completed tasks:", error);
+      res.status(500).json({ error: error.message });
+  }
+});
+
+
 module.exports = router;

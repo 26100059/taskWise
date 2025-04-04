@@ -1,5 +1,6 @@
 // src/pages/ProfilePage.js
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Line as ChartLine, Pie } from 'react-chartjs-2';
 import { Line as ProgressBar } from 'rc-progress';
 import {
@@ -14,6 +15,7 @@ import {
   Legend,
 } from 'chart.js';
 import '../styles/profilePage.css';
+import axios from 'axios';
 
 ChartJS.register(
   CategoryScale,
@@ -28,6 +30,8 @@ ChartJS.register(
 
 const ProfilePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [cumulativeTime, setCumulativeTime] = useState(0);
+  
 
   // Read dark mode preference from local storage on mount
   useEffect(() => {
@@ -36,15 +40,39 @@ const ProfilePage = () => {
     document.body.classList.toggle("dark-mode", darkModePref);
   }, []);
 
-  // Dummy user data
-  const userName = "John Doe";
-  const xp = 230;
-  const level = Math.floor(xp / 100) + 1;
-  const currentXP = xp % 100;
-  const progressPercent = currentXP; // out of 100
+
+  const user = useSelector((state) => state.auth.user);
+  const userName = user.name;
+  const userId = user.userId;
+  // console.log("User ID in the followign :", userId); // Debugging line
+  useEffect(() => {
+    const fetchCumulativeTime = async () => {
+      if (userId) {  // Use the local userId state
+        try {
+          const response = await axios.get(`http://localhost:7000/profilePage/${userId}/commulative`);
+          setCumulativeTime(response.data.cumulativeTime);
+        } catch (error) {
+          console.error("Error fetching cumulative time:", error);
+        }
+      } else {
+        console.warn("User ID is not available.");
+      }
+    };
+
+    fetchCumulativeTime();
+  }, [userId]); // Depend on userId
+  // console.log("Cumulative Time:", cumulativeTime); // Debugging line
+  var xp = cumulativeTime * 10; 
+
+
+
+  var level = Math.floor(xp / 100) + 1;
+  var currentXP = xp % 100;
+  var progressPercent = currentXP;
 
   // Dummy weekly trend data for tasks completed
-  const weeklyTrendArray = [3, 5, 2, 6, 4, 7, 1];
+  
+  var weeklyTrendArray = [0,0,0,0,0,0,0];
 
   // Adjust font size based on screen width
   const getFontSize = () => {
