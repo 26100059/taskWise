@@ -93,18 +93,14 @@ router.get('/:userId/commulative', async (req, res) => {
   try {
     const userId = req.params.userId; // Get userId from req.params
 
-    // console.log("User ID:", userId);
-
     // Find all tasks with status 'done' for the given user
     const completedTasks = await Task.find({ user_id: userId, status: 'done' });
-    // console.log("Completed tasks:", completedTasks);
 
     // Calculate cumulative time in hours
     const cumulativeTime = completedTasks.reduce((total, task) => {
       return total + (task.duration || 0); // Assuming 'time_spent' is in hours
     }, 0);
 
-    // console.log("Cumulative time:", cumulativeTime);
 
     res.json({ cumulativeTime });
   } catch (error) {
@@ -116,17 +112,13 @@ router.get('/:userId/commulative', async (req, res) => {
 router.get('/:userId/weekly-completed-tasks', async (req, res) => {
   try {
       const { userId } = req.params;
-      const { monday, sunday } = getCurrentWeekBoundaries();  // Use monday and sunday
-      console.log("Start of week:", monday); // Debugging line
-      console.log("End of week:", sunday); // Debugging line
-
+      const { monday, sunday } = getCurrentWeekBoundaries();
       const completedTasks = await Task.find({
           user_id: userId,
           status: 'done',
           updated_at: { $gte: monday, $lte: sunday }   // Include updated_at
       });
 
-      console.log("Completed tasks in this week:", completedTasks); // Debugging line
 
       const dailyCounts = Array(7).fill(0); // Initialize array for each day of the week
 

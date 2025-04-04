@@ -63,8 +63,7 @@ const ProfilePage = () => {
     };
 
     fetchCumulativeTime();
-  }, [userId]); // Depend on userId
-  // console.log("Cumulative Time:", cumulativeTime); // Debugging line
+  }, [userId]);
   const xp = cumulativeTime * 10; 
 
 
