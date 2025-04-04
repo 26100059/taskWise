@@ -26,6 +26,7 @@
   background: #1a1a1a;
   color: white;
 }
+
 /* Dark Mode Overrides for Specific Components */
 .dark-mode .navbar,
 .dark-mode .smart-suggestions,
@@ -381,4 +382,10 @@
   .calendar-section {
     margin-bottom: 1rem;
   }
+}
+
+.add-btn:disabled {
+  background-color: #ccc; /* Grey background */
+  cursor: not-allowed;    /* Change cursor to indicate it's disabled */
+  opacity: 0.8;           /* Optional: make it slightly faded */
 }

@@ -82,6 +82,9 @@ const DashboardPage = () => {
     info: "",
   });
 
+  // Loading state for task submission
+  const [loading, setLoading] = useState(false);
+
   // Time slots state for calendar events
   const [timeSlots, setTimeSlots] = useState([]);
 
@@ -170,6 +173,9 @@ const DashboardPage = () => {
     e.preventDefault();
     if (!taskInput.name || !taskInput.deadline || !taskInput.duration) return;
 
+    // Set loading state to true to disable the button and show loader
+    setLoading(true);
+
     try {
       const response = await fetch("http://localhost:7000/api/scheduling/schedule-task", {
         method: "POST",
@@ -193,6 +199,9 @@ const DashboardPage = () => {
     } catch (error) {
       console.error("Error adding task:", error);
       alert("Error adding task");
+    } finally {
+      // Reset loading state
+      setLoading(false);
     }
   };
 
@@ -311,13 +320,10 @@ const DashboardPage = () => {
               >
                 <i className="fa-solid fa-circle-user"></i>
               </button>
-              <button
-                className="nav-btn logout"
-                onClick={() => {
+              <button className="nav-btn logout" onClick={() => {
                   handleLogout();
                   setMobileMenuOpen(false);
-                }}
-              >
+                }}>
                 LOG OUT
               </button>
             </div>
@@ -430,8 +436,8 @@ const DashboardPage = () => {
                   setTaskInput({ ...taskInput, info: e.target.value })
                 }
               ></textarea>
-              <button type="submit" className="add-btn">
-                Add Task
+              <button type="submit" className="add-btn" disabled={loading}>
+                {loading ? "Adding Task..." : "Add Task"}
               </button>
             </form>
           </div>
@@ -459,3 +465,6 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
+
+
+
