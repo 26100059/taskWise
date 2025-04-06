@@ -45,7 +45,7 @@ require("dotenv").config();
 
 // Configure CORS to allow requests only from your frontend
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "https://taskwise-sigma.vercel.app",
+  origin: process.env.FRONTEND_URL || "https://taskwise-sigma.vercel.app/",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true // Only needed if you're sending cookies or auth headers
 }));
