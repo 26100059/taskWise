@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Testing backend.");
+  res.send("Backend is running...");
 });
 
 // Mount testing routes if needed
