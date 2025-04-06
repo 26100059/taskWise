@@ -49,14 +49,15 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true // Only needed if you're sending cookies or auth headers
 }));
-require("dotenv").config();
-console.log("Allowed frontend URL:", process.env.FRONTEND_URL);
+
+// require("dotenv").config();
+// console.log("Allowed frontend URL:", process.env.FRONTEND_URL);
 
 // app.use(cors());
 
-app.get("/test-cors", (req, res) => {
-  res.json({ origin: req.headers.origin });
-});
+// app.get("/test-cors", (req, res) => {
+//   res.json({ origin: req.headers.origin });
+// });
 
 
 app.use(express.json());
