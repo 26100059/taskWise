@@ -44,11 +44,31 @@ const connectToDatabase = require("./db/mongo");
 require("dotenv").config();
 
 // Configure CORS to allow requests only from your frontend
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL || "https://taskwise-sigma.vercel.app",
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+//   credentials: true // Only needed if you're sending cookies or auth headers
+// }));
+
+const allowedOrigins = [
+  "https://taskwise-sigma.vercel.app",
+  "https://taskwise-lk4iclmb8-anonymouscobra789-gmailcoms-projects.vercel.app"
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "https://taskwise-sigma.vercel.app",
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true // Only needed if you're sending cookies or auth headers
+  credentials: true
 }));
+
 
 // require("dotenv").config();
 // console.log("Allowed frontend URL:", process.env.FRONTEND_URL);
