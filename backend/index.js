@@ -32,4 +32,4 @@ connectToDatabase()
   .catch(err => {
     console.error("Error connecting to the database:", err);
   });
-  module.exports = app;
+  // module.exports = app;
