@@ -37,40 +37,82 @@ function extractJSON(content) {
   }
 }
 
+
+/**
+ * **Objective**: Generate **non-overlapping time slots** for a new task after the current time, before the deadline, and following the rules.
+
+**Pathway**:
+
+1. **Determine available time range**:
+   - Check the current time and the task's deadline.
+   - Identify the **overall available time window** (from the current time to the task deadline).
+   
+2. **Assess existing time slots**:
+   - Look at the existing time slots.
+   - Identify the **less cluttered days** (those with fewer or no time slots already scheduled) and **more cluttered days** (those with many scheduled time slots).
+   
+3. **Prioritize less cluttered days**:
+   - Start by considering **less cluttered days** for allocating the task.
+   - If no valid slot exists there, move to more cluttered days.
+
+4. **Check working hours**:
+   - Prioritize **working hours (08:00–20:00)** unless:
+     - Info allows a different time, or
+     - No valid working-hour slots exist.
+   - Allocate slots during this time frame first.
+
+5. **Allocate task slots**:
+   - Try to split the task into **smaller chunks** of less than 3 hours (if possible) to maximize flexibility.
+   - Allocate time slots sequentially based on available gaps in each day, ensuring no overlap with existing tasks.
+
+6. **Balance time per day**:
+   - **Limit each day’s total task duration to 6 hours**.
+   - If the task exceeds 6 hours, split it across **multiple days**, ensuring **no single day is overloaded**.
+
+7. **Check for distant deadlines**:
+   - If the task deadline is more than 5 days away:
+     - **Use earlier free days** if they exist, even if this means scheduling the task earlier than the closest day to the deadline.
+     - If earlier days conflict with existing tasks, or no earlier days are free, schedule closer to the deadline.
+   
+8. **Final allocation check**:
+   - Ensure the task **exactly matches the required duration** across all time slots.
+   - Ensure all newly created slots **do not overlap** with existing ones.
+
+9. **Output time slots**:
+   - Return a **JSON array** of the newly allocated time slots. No extra comments, texts, explanation.
+ * 
+ * 
+ */
+
+
+/**
+ * 
+ * 
+ */
+
 // Function to generate LLM prompt
 const generatePrompt = (newTask, existingTimeSlots, info) => `
-You are an intelligent scheduling assistant. Your task is to schedule a new task into a user’s existing calendar while ensuring efficiency and avoiding conflicts. Follow the rules carefully and return only the updated schedule in a valid JSON format.
+You are a scheduling assistant. Based on the current time, a new task (with ID, duration, and deadline), and a list of existing time slots, generate one or more **non-overlapping time slots** that fulfill the new task's exact duration **before the deadline** and **after the current time**.
 
-*IMPORTANT:*  
-- You *must include all existing time slots as they are* and only add the newly scheduled ones.  
-- *Do not modify, remove, or alter* any existing time slots.  
-- The total duration of the new timeslots *must exactly match* the duration of the input task.
-- If availability is not limited, distribute a task's time slots over multiple days instead of scheduling them all on the same day.
- 
+Rules:
+1. Time slots must **not overlap** with existing ones.
+2. Total scheduled time must **exactly match the task's duration**.
+3. **Start after current_time**, and **end on or before the deadline**.
+4. Split the task across **multiple days** if needed. Avoid **back-to-back slots** on the same day unless no other option exists.
+5. Prefer **working hours (08:00–20:00)** unless:
+   - Info field allows otherwise, or
+   - No valid working-hour slots exist.
+6. Never schedule more than **6 hours on any single day**. Always split tasks across multiple days when the duration exceeds this limit, even if the day has enough free hours.
+7. For tasks with distant deadlines (more than 5 days away):
+   - If **free days are available before the deadline**, **use them first** for the task, even if it means starting earlier than the closest day to the deadline.
+   - If **no free days** are available before the deadline or if earlier scheduling conflicts with other rules (such as task duration or existing time slots), **schedule closer to the deadline**.
+   - Only choose a **single day** for scheduling if the task duration is ≤ 6 hours.
+8. **Split tasks into optimal chunks** of **less than 3 hours** per time slot to maximize flexibility and avoid overworking any single day.
+9. Ensure the total scheduled time on any day **does not exceed 6 hours**, even if multiple time slots are available. This includes considering the total hours scheduled across all tasks on that day.
+10. Return only a **JSON array of new time slots**. No explanation.
 
-*Note:* Duration is in hours.
-
----
-
-### *Scheduling Rules:*
-1. *No Overlaps:* Ensure the new task does not conflict with existing tasks.
-2. *Exact Duration Matching:* The total duration of the new timeslots *must exactly match* the duration of the input task.  
-3. *Deadline Priority:* The task must be fully scheduled before the deadline.
-4. *Current Time Constraint:* The new timeslots generated *must start after* the given current_time.
-5. *Task Splitting (if needed):*  
-   - If the task duration is *greater than 2 hours, you **can* split it into multiple time slots across different days *as long as the total duration remains correct* and it fits before the deadline.  
-6. ** User Preferences (Highly Important, Must Follow):**  
-   - If the user specifies preferred days (e.g., "Tuesday and Thursday only"), *you must check whether a given ISO timestamp falls on those days before using it.*  
-   - Example: If "info": "Tuesday and Thursday only", *you must only schedule tasks on timestamps that match those days.*  
-7. *Strict JSON Output:* The response must be a *valid JSON array* in the format below.  
-8. *Retain Previous Time Slots:*  
-   - *All existing time slots must be included* in the output without changes.  
-   - *Only add new time slots* to accommodate the new task.
-
-
-   ### Before finalizing the answer:
-1. Double-check that *all existing time slots* are included in your response without any changes.
-2. Verify that the sum of the durations of the new time slots matches the total duration of the task exactly.
+### Before finalizing the answer:
+1. Verify that the sum of the durations of the new time slots matches the total duration of the task exactly.
 
 ---
 
@@ -86,7 +128,6 @@ You are an intelligent scheduling assistant. Your task is to schedule a new task
   "existingTimeSlots": ${JSON.stringify(existingTimeSlots, null, 2)},
   "info": "${info}"
 }
-
 
 ---
 
@@ -106,11 +147,6 @@ Return only a valid JSON array of time slots. Make sure previous timeslots remai
 
 async function replaceTimeSlots(newTimeSlots, userId, session) {
   try {
-    // Step 1: Delete all time slots associated with the taskId (or userId, as needed) within the session
-    // Assuming task_id is related to user_id, and you want to delete based on task_id
-    const deletedCount = await deleteTimeSlotsByUserId(userId, session);
-
-    // Step 2: Ensure newTimeSlots is an array of objects
     if (typeof newTimeSlots === "string") {
       newTimeSlots = JSON.parse(newTimeSlots);
     }
@@ -121,10 +157,8 @@ async function replaceTimeSlots(newTimeSlots, userId, session) {
 
     // Step 3: Create new time slots for the user only
     const createdCount = await createNewTimeSlots(newTimeSlots, session);
-    // await createNewTimeSlots(newTimeSlots, session);
-    if (deletedCount > createdCount) throw new Error("Model failed to generate valid response");
 
-    console.log("Successfully replaced time slots.");
+    console.log(`Successfully replaced time slots. ${createdCount} new slots were created. `);
   } catch (error) {
     console.error("Failed to replace time slots:", error.message);
     throw error;
@@ -155,8 +189,6 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
     });
     await newTask.save({ session });
 
-    const taskId = newTask._id;
-
     // Step 2: Fetch only timeslots of the user id
     const existingTimeSlots = await getTimeSlotsByUserId(userId);
 
@@ -171,7 +203,7 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
     console.log(formattedTimeSlots);
 
     // Step 3: Prepare input for LLM API
-    const llmPrompt = generatePrompt(newTask, formattedTimeSlots, info);
+    const llmPrompt = generatePrompt(newTask, formattedTimeSlots, info); //The newTask's task id is linked to timeslots by gpt itself.
 
     // console.log("LLM API INPUT", llmPrompt);
 
@@ -195,13 +227,13 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
     // Extract the raw content (text response from LLM)
     const llmOutput = llmJson.choices?.[0]?.message?.content || "";
 
-    // console.log("--line before llm out put--")
-    // console.log(llmOutput)
+    console.log("--line before llm out put--")
+    console.log(llmOutput)
 
     // Extract JSON from the response content
     const newTimeSlots = extractJSON(llmOutput);
 
-    // console.log("--line before new Time slots--")
+    console.log("--line before new Time slots--")
     console.log(newTimeSlots);
 
     // Step 4: Replace time slots within transaction
