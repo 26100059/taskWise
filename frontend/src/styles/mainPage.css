@@ -152,15 +152,14 @@ body {
   color: var(--medium-gray);
   letter-spacing: 0.05em;
 }
-
-
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .mainPage-main-content {
     flex-direction: column;
+    margin: 0;
+    padding: 0;
   }
 
-  /* Hide the calendar section on mobile */
   .mainPage-left-section {
     display: none;
   }
@@ -169,7 +168,6 @@ body {
     flex-direction: column;
   }
 
-  /* Reduce button padding on mobile */
   .mainPage-btn {
     padding: 0.5rem 1.5rem;
   }
@@ -183,16 +181,16 @@ body {
   }
 
   .mainPage-content-container {
-    flex: 1 1 auto;
     width: 100%;
-    margin: 3rem auto 0 auto; /* Center horizontally with small top margin */
-    padding: 1rem;
+    margin: 1rem auto 0 auto; /* Smaller top margin */
+    padding: 0.5rem 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 80vh;
     box-sizing: border-box;
+    height: auto;         /* Let it size naturally */
+    min-height: unset;    /* Remove forced vertical space */
   }
 
   .mainPage-right-section {
