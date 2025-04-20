@@ -9,13 +9,12 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         loginSuccess: (state, action) => {
-            //   state.user = action.payload;
             state.user = {
                 userId: action.payload.userId,
                 token: action.payload.token,
-                name: action.payload.name,  // ✅ Added 'name' field
+                name: action.payload.name, 
             };
-            localStorage.setItem('user', JSON.stringify(action.payload)); // Save user data
+            localStorage.setItem('user', JSON.stringify(action.payload));
         },
         logout: (state) => {
             state.user = null;

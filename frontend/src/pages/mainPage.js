@@ -1,9 +1,6 @@
-// src/pages/MainPage.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/mainPage.css';
-
-// Import images
 import logoImage from '../assets/logo.png';
 import calendarImage from '../assets/calendar.png';
 
@@ -29,13 +26,13 @@ const MainPage = () => {
             </div>
             <p className="mainPage-tagline">Smarter Scheduling, Better Productivity.</p>
             <div className="mainPage-button-group">
-              <button 
+              <button
                 onClick={() => navigate('/signup')}
                 className="mainPage-btn mainPage-signup-btn"
               >
                 Sign Up
               </button>
-              <button 
+              <button
                 onClick={() => navigate('/signin')}
                 className="mainPage-btn mainPage-signin-btn"
               >
@@ -45,7 +42,7 @@ const MainPage = () => {
           </div>
         </div>
       </div>
-      
+
       <footer className="mainPage-footer">
         <p className="mainPage-copyright">
           TASK WISE © 2025. ALL RIGHTS RESERVED

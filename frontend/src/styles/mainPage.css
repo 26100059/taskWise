@@ -19,7 +19,6 @@ body {
   color: var(--text-color);
 }
 
-/* Container for the whole page */
 .mainPage-container {
   min-height: 100vh;
   background-color: white;
@@ -27,7 +26,6 @@ body {
   flex-direction: column;
 }
 
-/* Full-width content container that centers vertically */
 .mainPage-content-container {
   flex: 1;
   width: 100%;
@@ -37,7 +35,6 @@ body {
   justify-content: center;
 }
 
-/* Main content holds the two sections */
 .mainPage-main-content {
   display: flex;
   gap: 2rem;
@@ -45,7 +42,6 @@ body {
   max-width: 1200px;
 }
 
-/* LEFT SECTION: Calendar Image */
 .mainPage-left-section {
   flex: 2;
   display: flex;
@@ -64,7 +60,6 @@ body {
   display: block;
 }
 
-/* RIGHT SECTION: Branding & Buttons */
 .mainPage-right-section {
   flex: 1.5;
   display: flex;
@@ -140,7 +135,6 @@ body {
   background-color: var(--primary-hover);
 }
 
-/* Footer styling */
 .mainPage-footer {
   text-align: center;
   padding: 1rem;
@@ -153,26 +147,23 @@ body {
   letter-spacing: 0.05em;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
   .mainPage-main-content {
     flex-direction: column;
   }
-  
-  /* Hide the calendar section on mobile */
+
   .mainPage-left-section {
     display: none;
   }
-  
+
   .mainPage-button-group {
     flex-direction: column;
   }
-  
-  /* Reduce button padding on mobile */
+
   .mainPage-btn {
     padding: 0.5rem 1.5rem;
   }
-  
+
   .mainPage-content-container {
     flex: 1 1;
     width: 100%;

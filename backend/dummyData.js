@@ -1,4 +1,3 @@
-// dummyData.js
 const mongoose = require('mongoose');
 const User = require('./models/User');
 const Task = require('./models/Task');
@@ -7,7 +6,6 @@ const UserProfileStats = require('./models/UserProfileStats');
 
 require('dotenv').config();
 
-// Define your connection
 const uri = process.env.MONGO_URI;
 
 const connect = async () => {
@@ -23,7 +21,6 @@ const connect = async () => {
 const insertDummyData = async () => {
   await connect();
 
-  // Create or update the user
   let user = await User.findById("67d96ed12fa6e5fb171af63f");
   if (!user) {
     user = new User({
@@ -40,11 +37,9 @@ const insertDummyData = async () => {
     console.log("User already exists.");
   }
 
-  // Remove any existing tasks and timeslots for a clean slate
   await Task.deleteMany({ user_id: "67d96ed12fa6e5fb171af63f" });
   await TimeSlot.deleteMany({});
 
-  // Define dates for each weekday (using UTC for consistency)
   const dayDates = {
     MON: new Date("2025-03-17T10:00:00Z"),
     TUE: new Date("2025-03-18T10:00:00Z"),
@@ -53,7 +48,6 @@ const insertDummyData = async () => {
     FRI: new Date("2025-03-21T10:00:00Z")
   };
 
-  // Define tasks count per day
   const tasksPlan = [
     { day: "MON", count: 2 },
     { day: "TUE", count: 1 },
@@ -67,7 +61,6 @@ const insertDummyData = async () => {
   for (const plan of tasksPlan) {
     const { day, count } = plan;
     for (let i = 0; i < count; i++) {
-      // Alternate statuses: even-index tasks are done, odd-index are pending
       const status = (taskIndex % 2 === 0) ? "done" : "pending";
       const deadline = dayDates[day];
       const task = new Task({
@@ -82,7 +75,6 @@ const insertDummyData = async () => {
       const savedTask = await task.save();
       tasksInserted.push(savedTask);
 
-      // Create one timeslot per task: start 1 hour before deadline, end at deadline
       const timeslot = new TimeSlot({
         task_id: savedTask._id,
         start_time: new Date(deadline.getTime() - 60 * 60 * 1000),
@@ -97,7 +89,6 @@ const insertDummyData = async () => {
   }
   console.log(`${tasksInserted.length} tasks (with timeslots) inserted for user 67d96ed12fa6e5fb171af63f.`);
 
-  // Remove existing profile stats and then create new one.
   await UserProfileStats.deleteMany({ user_id: "67d96ed12fa6e5fb171af63f" });
   const profileStats = new UserProfileStats({
     user_id: "67d96ed12fa6e5fb171af63f",

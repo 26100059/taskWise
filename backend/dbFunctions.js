@@ -1,6 +1,5 @@
-// dbFunctions.js
 const mongoose = require('mongoose');
-const TimeSlot = require('./models/TimeSlot');  // Assuming TimeSlot model is defined
+const TimeSlot = require('./models/TimeSlot');
 const Task = require("./models/Task");
 
 const deleteTimeSlotsByUserId = async (userId, session) => {
@@ -55,19 +54,15 @@ const createNewTimeSlots = async (newTimeSlots, session) => {
 };
 
 
-//Fetches timeslots and populates them with task name.
 const getTimeSlotsByUserId = async (userId) => {
   try {
 
-    // Step 1: Find all tasks associated with the user_id plus only the pending tasks.
     const tasks = await Task.find({ user_id: userId, status: "pending" });
 
-    // Step 2: Extract task IDs from the tasks
     const taskIds = tasks.map(task => task._id);
 
-    // Step 3: Fetch all time slots for the extracted task IDs, and populate task details (task_name, status, etc.)
     const timeSlots = await TimeSlot.find({ task_id: { $in: taskIds } })
-      .populate('task_id', 'task_name status duration deadline') // Populate the task_id with selected task fields
+      .populate('task_id', 'task_name status duration deadline')
       .exec();
 
     return timeSlots;

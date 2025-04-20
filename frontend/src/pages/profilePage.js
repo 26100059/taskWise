@@ -1,4 +1,3 @@
-// src/pages/ProfilePage.js
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Line as ChartLine, Pie } from 'react-chartjs-2';
@@ -37,9 +36,8 @@ const ProfilePage = () => {
   const [completedTasks, setCompletedTasks] = useState(0);
   const [pendingTasks, setPendingTasks] = useState(0);
   const [overdueTasks, setOverdueTasks] = useState(0);
-  
 
-  // Read dark mode preference from local storage on mount
+
   useEffect(() => {
     const darkModePref = localStorage.getItem("darkMode") === "true";
     setIsDarkMode(darkModePref);
@@ -52,7 +50,7 @@ const ProfilePage = () => {
   const userId = user.userId;
   useEffect(() => {
     const fetchCumulativeTime = async () => {
-      if (userId) {  // Use the local userId state
+      if (userId) {
         try {
           const response = await axios.get(`${API_BASE}/profilePage/${userId}/commulative`);
           setCumulativeTime(response.data.cumulativeTime);
@@ -66,7 +64,7 @@ const ProfilePage = () => {
 
     fetchCumulativeTime();
   }, [userId]);
-  const xp = cumulativeTime * 10; 
+  const xp = cumulativeTime * 10;
 
 
 
@@ -91,25 +89,22 @@ const ProfilePage = () => {
     fetchWeeklyTrend();
   }, [userId]);
 
-
-  // Adjust font size based on screen width
   const getFontSize = () => {
     const width = window.innerWidth;
-    return width > 1300 ? 1.25 : 0.9375; // in rem
+    return width > 1300 ? 1.25 : 0.9375;
   };
 
-  // Update chart options based on dark mode
   const lineOptions = {
     responsive: true,
     plugins: {
-      legend: { 
-        display: true, 
-        position: 'top', 
+      legend: {
+        display: true,
+        position: 'top',
         labels: { font: { size: 15, color: isDarkMode ? "#fff" : "#333" } },
       },
-      title: { 
-        display: true, 
-        text: 'Weekly Trend', 
+      title: {
+        display: true,
+        text: 'Weekly Trend',
         font: { size: getFontSize() * 16, color: isDarkMode ? "#fff" : "#333" },
         padding: { bottom: 10 }
       },
@@ -117,7 +112,7 @@ const ProfilePage = () => {
     scales: {
       y: {
         beginAtZero: true,
-        ticks: { 
+        ticks: {
           stepSize: 1,
           color: isDarkMode ? "#fff" : "#333"
         },
@@ -133,19 +128,18 @@ const ProfilePage = () => {
   const pieOptions = {
     responsive: true,
     plugins: {
-      legend: { 
+      legend: {
         position: 'bottom',
         labels: { color: isDarkMode ? "#fff" : "#333" }
       },
-      title: { 
-        display: true, 
+      title: {
+        display: true,
         text: 'Tasks by Status',
-        color: isDarkMode ? "#fff" : "#333" 
+        color: isDarkMode ? "#fff" : "#333"
       },
     },
   };
 
-  // Chart data definitions
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [
@@ -185,8 +179,8 @@ const ProfilePage = () => {
     datasets: [
       {
         data: [
-          taskDistribution.Completed, 
-          taskDistribution.Pending, 
+          taskDistribution.Completed,
+          taskDistribution.Pending,
           taskDistribution.Overdue
         ],
         backgroundColor: ["#3b82f6", "#f59e0b", "#ef4444"],
@@ -195,9 +189,8 @@ const ProfilePage = () => {
   };
 
   return (
-    // Main container: adjust background and text color based on dark mode (dark mode background hard-coded to black)
-    <div 
-      className="profilePage-container" 
+    <div
+      className="profilePage-container"
       style={{ backgroundColor: isDarkMode ? "#000" : "var(--background-color)", color: isDarkMode ? "#fff" : "var(--text-color)" }}
     >
       <div className="profilePage-header-wrapper">
@@ -222,15 +215,15 @@ const ProfilePage = () => {
       <div className="profilePage-productivity-analytics">
         <div className="profilePage-graphs-container">
           {/* Left graph container: background updates based on dark mode */}
-          <div 
-            className="profilePage-left-graph" 
+          <div
+            className="profilePage-left-graph"
             style={{ backgroundColor: isDarkMode ? "#000" : "#fff" }}
           >
             <ChartLine data={lineData} options={lineOptions} />
           </div>
           {/* Right graph container */}
-          <div 
-            className="profilePage-right-graph" 
+          <div
+            className="profilePage-right-graph"
             style={{ backgroundColor: isDarkMode ? "#000" : "#fff" }}
           >
             <Pie data={pieData} options={pieOptions} />

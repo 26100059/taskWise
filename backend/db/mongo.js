@@ -1,7 +1,6 @@
-// db/mongo.js
 const mongoose = require('mongoose');
 
-require('dotenv').config(); // Ensure environment variables are loaded
+require('dotenv').config();
 
 const uri = process.env.MONGO_URI;
 
@@ -11,7 +10,7 @@ const connectToDatabase = async () => {
     console.log("Connected to MongoDB Atlas using Mongoose");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
-    process.exit(1); // Exit process if connection fails
+    process.exit(1);
   }
 };
 

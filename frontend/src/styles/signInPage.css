@@ -1,9 +1,5 @@
-/* File: src/styles/signInPage.css */
-
-/* Import a font from Google Fonts (optional) */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap");
 
-/* Root variables */
 :root {
     --primary-color: #3b82f6;
     --primary-hover: #2563eb;
@@ -13,33 +9,28 @@
     --dark-gray: #4b5563;
 }
 
-/* Reset / Box-Sizing */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Basic styling for body */
 body {
     font-family: "Arial", sans-serif;
     color: var(--text-color);
 }
 
-/* Container for the page: vertical stack of main content and footer */
 .signIn-container {
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
 
-/* Main content area: split horizontally (50/50) */
 .signIn-main-content {
     flex: 1;
     display: flex;
 }
 
-/* Left Section: Branding */
 .signIn-left-section {
     flex: 1;
     background: #ffffff;
@@ -49,7 +40,6 @@ body {
     padding: 40px 20px;
 }
 
-/* Brand Image styling */
 .signIn-brand-image {
     width: 80%;
     max-width: 600px;
@@ -58,7 +48,6 @@ body {
     left: 2rem;
 }
 
-/* Right Section: Sign In Form container wrapper */
 .signIn-right-section {
     flex: 1;
     display: flex;
@@ -67,7 +56,6 @@ body {
     padding: 20px;
 }
 
-/* Form Container: small container with light-gray background */
 .signIn-form-container {
     width: 80%;
     max-width: 350px;
@@ -78,14 +66,12 @@ body {
     text-align: left;
 }
 
-/* Form Title */
 .signIn-form-title {
     font-size: 24px;
     margin-bottom: 10px;
     color: var(--text-color);
 }
 
-/* Redirection prompt (using same classes as Sign Up page) */
 .signUp-signin-prompt {
     margin-bottom: 20px;
 }
@@ -96,7 +82,6 @@ body {
     font-weight: bold;
 }
 
-/* Error and Success messages */
 .signIn-error {
     color: red;
     font-size: 14px;
@@ -111,7 +96,6 @@ body {
     text-align: center;
 }
 
-/* Label styling */
 label {
     display: block;
     margin-bottom: 5px;
@@ -119,7 +103,6 @@ label {
     color: var(--text-color);
 }
 
-/* Input fields styling */
 input[type="email"],
 input[type="password"] {
     width: 100%;
@@ -130,7 +113,6 @@ input[type="password"] {
     font-size: 14px;
 }
 
-/* Submit Button styling */
 #signInBtn {
     width: 100%;
     background: var(--primary-color);
@@ -155,7 +137,6 @@ input[type="password"] {
     margin-left: 12px;
 }
 
-/* Footer styling (same as main page) */
 .signIn-footer {
     text-align: center;
     padding: 1rem;
@@ -168,17 +149,15 @@ input[type="password"] {
     letter-spacing: 0.05em;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
     .signIn-main-content {
         flex-direction: column;
     }
-  
-    /* Hide the left section on mobile */
+
     .signIn-left-section {
         display: none;
     }
-  
+
     .signIn-right-section {
         padding: 1rem;
     }

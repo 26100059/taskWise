@@ -1,4 +1,3 @@
-// src/pages/Dashboard.js
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
@@ -12,10 +11,8 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { logout } from "../redux/authSlice";
 
-//API BASE 
 const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
-// Modal Component for task details
 const Modal = ({ task, onClose, onSave }) => {
   const [doneStatus, setDoneStatus] = useState(task.extendedProps.status === "done");
 
@@ -67,17 +64,14 @@ const Modal = ({ task, onClose, onSave }) => {
 };
 
 const DashboardPage = () => {
-  const dispatch = useDispatch(); // for redux
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const calendarRef = useRef(null);
 
-  // Redux: Get the token from state
   const token = useSelector((state) => state.auth.user?.token);
 
-  // Dark mode state
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
 
-  // Task form state
   const [taskInput, setTaskInput] = useState({
     name: "",
     deadline: "",
@@ -85,25 +79,18 @@ const DashboardPage = () => {
     info: "",
   });
 
-  // Loading state for task submission
   const [loading, setLoading] = useState(false);
 
-  // Time slots state for calendar events
   const [timeSlots, setTimeSlots] = useState([]);
 
-  // Selected event for modal
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  // New state for the productivity tip
   const [suggestion, setSuggestion] = useState("");
 
-  // Mobile menu state for hamburger nav
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Notification state: { type: 'success' | 'failure', message: string }
   const [notification, setNotification] = useState(null);
 
-  // Function to display notification for 2 seconds with a custom message and type
   const showNotification = (message, type) => {
     setNotification({ type, message });
     setTimeout(() => {
@@ -111,12 +98,10 @@ const DashboardPage = () => {
     }, 2000);
   };
 
-  // Helper to format dates for ICS (YYYYMMDDTHHmmssZ)
   const formatICSDate = (date) => {
     return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
   };
 
-  // Generate ICS file with all events and trigger download
   const generateICSFile = () => {
     let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\n";
     timeSlots.forEach((event) => {
@@ -138,7 +123,6 @@ const DashboardPage = () => {
     a.click();
   };
 
-  // Fetch time slots from the backend using axios
   const fetchTimeSlots = useCallback(async () => {
     try {
       const res = await axios.get(`${API_BASE}/testingDB/timeSlots-by-userid`, {
@@ -165,7 +149,6 @@ const DashboardPage = () => {
     }
   }, [token]);
 
-  // Fetch the productivity tip from our suggestions route
   useEffect(() => {
     const fetchSuggestion = async () => {
       try {
@@ -182,12 +165,10 @@ const DashboardPage = () => {
     fetchTimeSlots();
   }, [fetchTimeSlots]);
 
-  // Handle task form submission
   const handleTaskSubmit = async (e) => {
     e.preventDefault();
     if (!taskInput.name || !taskInput.deadline || !taskInput.duration) return;
 
-    // Set loading state to true to disable the button and show loader
     setLoading(true);
 
     try {
@@ -205,7 +186,6 @@ const DashboardPage = () => {
         setTaskInput({ name: "", deadline: "", duration: "", info: "" });
         fetchTimeSlots();
       } else {
-        // Try to read the error response text from the server
         const errorText = await response.text();
         console.error("Failed to add task:", response.status, errorText);
         showNotification(`Failed to add task: ${response.status} - ${errorText}`, "failure");
@@ -214,12 +194,10 @@ const DashboardPage = () => {
       console.error("Error adding task:", error);
       showNotification("Error adding task", "failure");
     } finally {
-      // Reset loading state
       setLoading(false);
     }
   };
 
-  // Handle event drop (manual drag & drop update)
   const handleEventDrop = async (eventDropInfo) => {
     const { event } = eventDropInfo;
     const updatedStart = event.start.toISOString();
@@ -238,12 +216,10 @@ const DashboardPage = () => {
     }
   };
 
-  // Handle event click to show task details modal
   const handleEventClick = (info) => {
     setSelectedEvent(info.event);
   };
 
-  // Handle saving updated status from modal
   const handleSaveStatus = async (newStatus) => {
     const taskId = selectedEvent.extendedProps.taskId;
     if (!taskId) {
@@ -266,13 +242,11 @@ const DashboardPage = () => {
     }
   };
 
-  // Dark mode effect
   useEffect(() => {
     document.body.classList.toggle("dark-mode", isDarkMode);
     localStorage.setItem("darkMode", isDarkMode);
   }, [isDarkMode]);
 
-  // Logout handler with redux
   const handleLogout = () => {
     console.log("🚪 Logging out...");
     dispatch(logout());
@@ -282,7 +256,7 @@ const DashboardPage = () => {
     <div className={`dashboard ${isDarkMode ? "dark-mode" : ""}`}>
       {/* Notification Banner */}
       {notification && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             top: '20px',
@@ -353,9 +327,9 @@ const DashboardPage = () => {
                 <i className="fa-solid fa-circle-user"></i>
               </button>
               <button className="nav-btn logout" onClick={() => {
-                  handleLogout();
-                  setMobileMenuOpen(false);
-                }}>
+                handleLogout();
+                setMobileMenuOpen(false);
+              }}>
                 LOG OUT
               </button>
             </div>

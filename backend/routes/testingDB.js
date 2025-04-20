@@ -1,26 +1,20 @@
-// backend/routes/testingDB.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-// Import models
 const User = require('../models/User');
 const Task = require('../models/Task');
 const TimeSlot = require('../models/TimeSlot');
 const Suggestion = require('../models/Suggestion');
 const UserProfileStats = require('../models/UserProfileStats');
 
-const {getTimeSlotsByUserId} = require('../dbFunctions'); // Import from dbFunctions.js
-const authenticateToken = require('../authMiddleware'); // Import the middleware for redux state
+const {getTimeSlotsByUserId} = require('../dbFunctions'); 
+const authenticateToken = require('../authMiddleware'); 
 
 require('dotenv').config();
 
-//important for login
 const JWT_SECRET = process.env.JWT_SECRET;
 
-/* ===== USERS CRUD ===== */
-// Get all users
 router.get('/users', async (req, res) => {
   try {
     const users = await User.find();
@@ -30,7 +24,6 @@ router.get('/users', async (req, res) => {
   }
 });
 
-// Create a user
 router.post('/users', async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -42,7 +35,6 @@ router.post('/users', async (req, res) => {
   }
 });
 
-// Update a user by ID
 router.put('/users/:id', async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -53,7 +45,6 @@ router.put('/users/:id', async (req, res) => {
   }
 });
 
-// Delete a user by ID
 router.delete('/users/:id', async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
@@ -63,8 +54,6 @@ router.delete('/users/:id', async (req, res) => {
   }
 });
 
-/* ===== TASKS CRUD ===== */
-// Get all tasks
 router.get('/tasks', async (req, res) => {
   try {
     const tasks = await Task.find();
@@ -74,7 +63,6 @@ router.get('/tasks', async (req, res) => {
   }
 });
 
-// Create a task
 router.post('/tasks', async (req, res) => {
   try {
     const { user_id, task_name, duration, deadline, status } = req.body;
@@ -86,7 +74,6 @@ router.post('/tasks', async (req, res) => {
   }
 });
 
-// Update a task by ID
 router.put('/tasks/:id', async (req, res) => {
   try {
     const { user_id, task_name, duration, deadline, status } = req.body;
@@ -97,7 +84,6 @@ router.put('/tasks/:id', async (req, res) => {
   }
 });
 
-// Delete a task by ID
 router.delete('/tasks/:id', async (req, res) => {
   try {
     await Task.findByIdAndDelete(req.params.id);
@@ -108,21 +94,17 @@ router.delete('/tasks/:id', async (req, res) => {
 });
 
 
-/* ===== TIME SLOTS CRUD ===== */
-
-// Get time slots by user ID
 router.get('/timeSlots-by-userid',authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId; //obtained from redux jwt token
+    const userId = req.user.userId;
 
-    const timeSlots = await getTimeSlotsByUserId(userId); // Call the function to get time slots
+    const timeSlots = await getTimeSlotsByUserId(userId);
     res.json(timeSlots);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Get all time slots
 router.get('/timeslots', async (req, res) => {
   try {
     const timeslots = await TimeSlot.find();
@@ -132,7 +114,6 @@ router.get('/timeslots', async (req, res) => {
   }
 });
 
-// Create a time slot
 router.post('/timeslots', async (req, res) => {
   try {
     const { task_id, start_time, end_time } = req.body;
@@ -144,7 +125,6 @@ router.post('/timeslots', async (req, res) => {
   }
 });
 
-// Update a time slot by ID
 router.put('/timeslots/:id', async (req, res) => {
   try {
     const { task_id, start_time, end_time } = req.body;
@@ -155,7 +135,6 @@ router.put('/timeslots/:id', async (req, res) => {
   }
 });
 
-// Delete a time slot by ID
 router.delete('/timeslots/:id', async (req, res) => {
   try {
     await TimeSlot.findByIdAndDelete(req.params.id);
@@ -165,8 +144,6 @@ router.delete('/timeslots/:id', async (req, res) => {
   }
 });
 
-/* ===== SUGGESTIONS CRUD ===== */
-// Get all suggestions
 router.get('/suggestions', async (req, res) => {
   try {
     const suggestions = await Suggestion.find();
@@ -176,7 +153,6 @@ router.get('/suggestions', async (req, res) => {
   }
 });
 
-// Create a suggestion
 router.post('/suggestions', async (req, res) => {
   try {
     const { user_id, suggestion_text } = req.body;
@@ -188,7 +164,6 @@ router.post('/suggestions', async (req, res) => {
   }
 });
 
-// Update a suggestion by ID
 router.put('/suggestions/:id', async (req, res) => {
   try {
     const { user_id, suggestion_text } = req.body;
@@ -199,7 +174,6 @@ router.put('/suggestions/:id', async (req, res) => {
   }
 });
 
-// Delete a suggestion by ID
 router.delete('/suggestions/:id', async (req, res) => {
   try {
     await Suggestion.findByIdAndDelete(req.params.id);
@@ -209,8 +183,6 @@ router.delete('/suggestions/:id', async (req, res) => {
   }
 });
 
-/* ===== USER PROFILE STATS CRUD ===== */
-// Get all profile stats
 router.get('/userprofilestats', async (req, res) => {
   try {
     const stats = await UserProfileStats.find();
@@ -220,7 +192,6 @@ router.get('/userprofilestats', async (req, res) => {
   }
 });
 
-// Create profile stats
 router.post('/userprofilestats', async (req, res) => {
   try {
     const { user_id, xp, level, productivity_score } = req.body;
@@ -232,7 +203,6 @@ router.post('/userprofilestats', async (req, res) => {
   }
 });
 
-// Update profile stats by ID
 router.put('/userprofilestats/:id', async (req, res) => {
   try {
     const { user_id, xp, level, productivity_score } = req.body;
@@ -243,7 +213,6 @@ router.put('/userprofilestats/:id', async (req, res) => {
   }
 });
 
-// Delete profile stats by ID
 router.delete('/userprofilestats/:id', async (req, res) => {
   try {
     await UserProfileStats.findByIdAndDelete(req.params.id);
@@ -255,22 +224,18 @@ router.delete('/userprofilestats/:id', async (req, res) => {
 
 
 
-// Register a new user
 router.post('/usersregister', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ $or: [{ name }, { email }] });
     if (existingUser) {
       return res.status(400).json({ error: "Username or email is already in use" });
     }
 
-    // Hash password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Save new user
     const user = new User({ name, email, password: hashedPassword });
     await user.save();
 
@@ -280,36 +245,31 @@ router.post('/usersregister', async (req, res) => {
   }
 });
 
-// Login user and generate token
 
 router.post('/userslogin', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ error: "Incorrect email" });
     }
 
-    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: "Incorrect password" });
     }
 
-    // Generate JWT
     const token = jwt.sign(
-      { userId: user._id, email: user.email, name: user.name },  // ✅ Include 'name' in token payload
+      { userId: user._id, email: user.email, name: user.name }, 
       JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    // ✅ Send name in response
     res.json({ message: "Login successful", token, userId: user._id, name: user.name });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-module.exports = router;  // Export router
+module.exports = router;

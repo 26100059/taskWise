@@ -1,4 +1,3 @@
-// src/pages/SignInPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -14,10 +13,8 @@ const SignInPage = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({ email: '', password: '' });
 
-  // Notification state: { type: 'success' | 'failure', message: string }
   const [notification, setNotification] = useState(null);
 
-  // Function to display notification for 2 seconds with a custom message and type
   const showNotification = (message, type) => {
     setNotification({ type, message });
     setTimeout(() => {
@@ -45,8 +42,8 @@ const SignInPage = () => {
         dispatch(loginSuccess({
           userId: data.userId,
           token: data.token,
-          name: data.name  // ✅ Pass 'name' from backend response
-        })); // Store in Redux
+          name: data.name
+        }));
         showNotification('Login successful! Redirecting...', 'success');
         setTimeout(() => navigate('/dashboard'), 500);
       } else {
@@ -62,7 +59,7 @@ const SignInPage = () => {
     <div className="signIn-container">
       {/* Notification Banner */}
       {notification && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             top: '20px',

@@ -1,11 +1,9 @@
-// backend/routes/profile.js
 const express = require('express');
 const router = express.Router();
 const Task = require('../models/Task');
 const User = require('../models/User');
 const UserProfileStats = require('../models/UserProfileStats');
 
-// Helper: Get current week's Monday and Sunday
 
 function getCurrentWeekBoundaries() {
   const now = new Date();
@@ -21,20 +19,17 @@ function getCurrentWeekBoundaries() {
 
   
 
-// GET /api/profile/:userId/analytics   
 router.get('/:userId/analytics', async (req, res) => {
   try {
     const { userId } = req.params;
     const { monday, sunday } = getCurrentWeekBoundaries();
 
-    // Find tasks for the user with status 'done' during the current week.
     const tasks = await Task.find({
       user_id: userId,
       status: 'done',
       updated_at: { $gte: monday, $lte: sunday }
     });
 
-    // Initialize productivity counts for each day
     const productivity = {
       MON: 0,
       TUE: 0,
@@ -45,7 +40,6 @@ router.get('/:userId/analytics', async (req, res) => {
       SUN: 0
     };
 
-    // Group tasks by day of week using updated_at
     tasks.forEach(task => {
       const date = new Date(task.updated_at);
       let dayIndex = date.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
@@ -63,7 +57,6 @@ router.get('/:userId/analytics', async (req, res) => {
       if (dayAbbrev) productivity[dayAbbrev] += 1;
     });
 
-    // Fetch profile stats and user name
     const profileStats = await UserProfileStats.findOne({ user_id: userId });
     const user = await User.findById(userId);
 
@@ -71,7 +64,6 @@ router.get('/:userId/analytics', async (req, res) => {
       profileStats: { name: user.name, xp: profileStats ? profileStats.xp : 0 },
       productivity: {
         weeklyTrend: productivity,
-        // These values could be calculated or stored; adjust as needed:
         taskDistribution: { Completed: 8, Pending: 4, Overdue: 2 },
         overallProductivity: profileStats ? profileStats.productivity_score : 0
       }
@@ -82,23 +74,14 @@ router.get('/:userId/analytics', async (req, res) => {
   }
 });
 
-
-
-
-// NEW FUNCTION ADDED BELOW
-
-
-// New function to calculate cumulative time of completed tasks
 router.get('/:userId/commulative', async (req, res) => {
   try {
-    const userId = req.params.userId; // Get userId from req.params
+    const userId = req.params.userId;
 
-    // Find all tasks with status 'done' for the given user
     const completedTasks = await Task.find({ user_id: userId, status: 'done' });
 
-    // Calculate cumulative time in hours
     const cumulativeTime = completedTasks.reduce((total, task) => {
-      return total + (task.duration || 0); // Assuming 'time_spent' is in hours
+      return total + (task.duration || 0);
     }, 0);
 
 
@@ -116,16 +99,16 @@ router.get('/:userId/weekly-completed-tasks', async (req, res) => {
       const completedTasks = await Task.find({
           user_id: userId,
           status: 'done',
-          updated_at: { $gte: monday, $lte: sunday }   // Include updated_at
+          updated_at: { $gte: monday, $lte: sunday }
       });
 
 
-      const dailyCounts = Array(7).fill(0); // Initialize array for each day of the week
+      const dailyCounts = Array(7).fill(0);
 
       completedTasks.forEach(task => {
           const taskDate = new Date(task.updated_at);
-          const dayOfWeek = taskDate.getDay(); // 0 (Sunday) to 6 (Saturday)
-          const dayIndex = (dayOfWeek + 6) % 7; // Convert to Monday(0) to Sunday(6)
+          const dayOfWeek = taskDate.getDay();
+          const dayIndex = (dayOfWeek + 6) % 7;
           dailyCounts[dayIndex]++;
       });
 
@@ -140,13 +123,10 @@ router.get('/:userId/task-summary', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Calculate total tasks
     const totalTasks = await Task.countDocuments({ user_id: userId });
 
-    // Calculate completed tasks
     const completedTasks = await Task.countDocuments({ user_id: userId, status: 'done' });
 
-    // Calculate overdue tasks
     const now = new Date();
     const overdueTasks = await Task.countDocuments({
       user_id: userId,
@@ -154,7 +134,6 @@ router.get('/:userId/task-summary', async (req, res) => {
       deadline: { $lt: now }
     });
 
-    // Calculate pending tasks
     const pendingTasks = totalTasks - completedTasks - overdueTasks;
 
     res.json({
@@ -168,7 +147,5 @@ router.get('/:userId/task-summary', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
 
 module.exports = router;

@@ -1,4 +1,3 @@
-// routes/suggestions.js
 const express = require("express");
 const router = express.Router();
 require('dotenv').config();
@@ -10,7 +9,6 @@ const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 router.get("/", async (req, res) => {
   try {
-    // Generate a productivity tip prompt
     const prompt =
       "You are an intelligent productivity assistant. Provide a brief and concise productivity tip (under 300 characters) to enhance the user's workflow. Try to make the phrase catchy or rhyming, and funny of possible **Do not include any internal reasoning or chain-of-thought. Only return the tip text.**";
 
@@ -29,7 +27,6 @@ router.get("/", async (req, res) => {
 
     const llmJson = await llmResponse.json();
     let tip = llmJson.choices?.[0]?.message?.content?.trim() || "";
-    // Ensure tip does not exceed 300 characters (trim if necessary)
     if (tip.length > 300) {
       tip = tip.substring(0, 300);
     }

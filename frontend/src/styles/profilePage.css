@@ -21,73 +21,67 @@ body {
   background-color: var(--background-color);
 }
 
-/* Main container styles */
 .profilePage-container {
-  background-color: var(--background-color); 
+  background-color: var(--background-color);
   padding: 2rem;
   max-width: 95%;
   margin: 0 auto;
 }
 
-/* Desktop view: ensure all content fits within 95vh */
 @media (min-width: 769px) {
-.profilePage-container {
-  display: flex;
-  flex-direction: column;
-  height: 95vh;
-  overflow: hidden;
-}
+  .profilePage-container {
+    display: flex;
+    flex-direction: column;
+    height: 95vh;
+    overflow: hidden;
+  }
 
-/* Decrease header height slightly */
-.profilePage-header-wrapper {
+  .profilePage-header-wrapper {
     flex: 0 0 10%;
-    background-color: var(--light-gray); 
-    border-radius: 0.5rem;     
-    padding: 1rem;        
+    background-color: var(--light-gray);
+    border-radius: 0.5rem;
+    padding: 1rem;
     margin-bottom: 1rem;
-}
+  }
 
-/* Graphs section takes the remaining space */
-.profilePage-productivity-analytics {
+  .profilePage-productivity-analytics {
     flex: 0 0 75%;
     background-color: var(--light-gray);
     padding: 1rem;
     border-radius: 0.5rem;
     overflow: auto;
-}
+  }
 
-/* Display graphs side by side with ratio 2:1 (weekly trend:pie) */
-.profilePage-graphs-container {
+  .profilePage-graphs-container {
     display: flex;
     gap: 1rem;
     height: 100%;
-}
+  }
 
-.profilePage-left-graph {
+  .profilePage-left-graph {
     flex: 2;
-    background-color: white; 
+    background-color: white;
     border-radius: 0.625rem;
     box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
     padding: 1rem;
-}
+  }
 
-.profilePage-right-graph {
+  .profilePage-right-graph {
     flex: 1;
-    background-color: white; 
+    background-color: white;
     border-radius: 0.625rem;
     box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
     padding: 1rem;
-}
+  }
 }
 
-/* Header and user stats styling (common to both desktop and mobile) */
 .profilePage-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: white; 
-  border-radius: 0.5rem;     
-  padding: 1rem;        
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
   box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
   margin-bottom: 0.125rem;
 }
@@ -95,7 +89,7 @@ body {
 .profilePage-user-name h2 {
   flex: 1;
   font-size: 2rem;
-  font-weight: bold; 
+  font-weight: bold;
   color: var(--text-color);
 }
 
@@ -119,7 +113,7 @@ body {
 }
 
 .profilePage-xp-bar {
-  width: 10rem; 
+  width: 10rem;
   max-width: 12.5rem;
   height: 1.25rem;
 }
@@ -129,29 +123,26 @@ body {
   color: var(--dark-gray);
   font-weight: bold;
 }
+
 @media (max-width: 768px) {
-  /* Adjust header layout: stack contents in a column */
   .profilePage-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
-  /* Smaller font sizes for header texts */
+
   .profilePage-user-name h2 {
     font-size: 1.2rem;
   }
-  
+
   .profilePage-level-display {
     font-size: 1rem;
   }
-  
-  /* Increase height of the weekly trends graph */
+
   .profilePage-left-graph {
-    height: 300px; /* Adjust value as needed */
+    height: 300px;
   }
-  
-  /* Existing mobile adjustments */
+
   .profilePage-graphs-container {
     flex-direction: column;
     gap: 1rem;
@@ -168,10 +159,8 @@ body {
 
 .dark-mode {
   background-color: black;
-  /* color: #e0e0e0; */
 }
 
-/* You can add more specific dark-mode styles as needed. For example: */
 .dark-mode .profilePage-header,
 .dark-mode .profilePage-xp-container {
   background-color: black;
@@ -179,12 +168,12 @@ body {
 }
 
 .dark-mode .profilePage-header-wrapper,
-.dark-mode .profilePage-productivity-analytics{
+.dark-mode .profilePage-productivity-analytics {
   background-color: #161618;
 }
 
 .dark-mode .profilePage-user-name h2,
 .dark-mode .profilePage-xp-text,
-.dark-mode .levelNumber{
+.dark-mode .levelNumber {
   color: white;
 }

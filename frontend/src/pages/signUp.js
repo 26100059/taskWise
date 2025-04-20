@@ -1,17 +1,14 @@
-// src/pages/SignUpPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../styles/signUpPage.css"; // Using our updated sign-up CSS
+import "../styles/signUpPage.css";
 
-// Import the brand image (which includes the brand name and tagline)
 import brandImage from '../assets/brandname.png';
 
 const API_BASE = process.env.REACT_APP_API_BASE_URL
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  
-  // Combined form state
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -19,17 +16,15 @@ const SignUpPage = () => {
     confirmPassword: ''
   });
 
-  // Notification state: { type: 'success' | 'failure', message: string }
   const [notification, setNotification] = useState(null);
 
-  // Function to display notification for 2 seconds with a custom message and type
   const showNotification = (message, type) => {
     setNotification({ type, message });
     setTimeout(() => {
       setNotification(null);
     }, 2000);
   };
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -37,35 +32,33 @@ const SignUpPage = () => {
       [name]: value
     }));
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Basic validation
+
     if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
       showNotification("Please fill out all fields.", 'failure');
       return;
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
       showNotification("Passwords do not match. Please try again.", 'failure');
       return;
     }
-    
-    // Prepare payload (mapping fullName to name)
+
     const payload = {
       name: formData.fullName,
       email: formData.email,
       password: formData.password
     };
-    
+
     try {
       const response = await fetch(`${API_BASE}/testingDB/usersregister`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-  
+
       if (response.ok) {
         showNotification('User registered successfully!', 'success');
         navigate('/');
@@ -86,12 +79,12 @@ const SignUpPage = () => {
       }
     }
   };
-  
+
   return (
     <div className="signUp-container">
       {/* Notification Banner */}
       {notification && (
-        <div 
+        <div
           style={{
             position: 'fixed',
             top: '20px',
@@ -112,7 +105,7 @@ const SignUpPage = () => {
         <div className="signUp-left-section">
           <img src={brandImage} alt="Brand Name and Tagline" className="signUp-brand-image" />
         </div>
-        
+
         {/* Right Section: Registration Form */}
         <div className="signUp-right-section">
           <div className="signUp-form-container">
@@ -131,7 +124,7 @@ const SignUpPage = () => {
                 onChange={handleChange}
                 required
               />
-  
+
               <label htmlFor="email">Email Address</label>
               <input
                 type="email"
@@ -142,7 +135,7 @@ const SignUpPage = () => {
                 onChange={handleChange}
                 required
               />
-  
+
               <label htmlFor="password">Password</label>
               <input
                 type="password"
@@ -153,7 +146,7 @@ const SignUpPage = () => {
                 onChange={handleChange}
                 required
               />
-  
+
               <label htmlFor="confirmPassword">Confirm Password</label>
               <input
                 type="password"
@@ -164,7 +157,7 @@ const SignUpPage = () => {
                 onChange={handleChange}
                 required
               />
-  
+
               <button type="submit" id="signUpBtn">
                 SIGN UP <span className="signUp-arrow">→</span>
               </button>
@@ -172,7 +165,7 @@ const SignUpPage = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Footer */}
       <footer className="signUp-footer">
         <p className="signUp-copyright">

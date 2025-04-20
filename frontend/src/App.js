@@ -12,7 +12,6 @@ import TestingDB from "./pages/TestingDB";
 
 console.log("🔹 App.js is being loaded!");
 
-// Protected Route Component for routes that require authentication
 const ProtectedRoute = ({ children }) => {
   const user = useSelector((state) => state.auth.user);
   if (!user) {
@@ -29,7 +28,6 @@ function App() {
     const storedUser = localStorage.getItem("user");
     console.log("📂 LocalStorage User:", storedUser ? JSON.parse(storedUser) : "No user found");
     if (storedUser) {
-      // Initialize Redux state from localStorage if user data exists
       dispatch(loginSuccess(JSON.parse(storedUser)));
     }
   }, [dispatch]);

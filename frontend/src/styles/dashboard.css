@@ -1,7 +1,4 @@
-/* Import Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&display=swap');
-
-/* File: src/styles/dashboard.css */
 @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap');
 
 :root {
@@ -21,13 +18,11 @@
   font-family: Arial, sans-serif;
 }
 
-/* Dark Mode */
 .dark-mode {
   background: #1a1a1a;
   color: white;
 }
 
-/* Dark Mode Overrides for Specific Components */
 .dark-mode .navbar,
 .dark-mode .smart-suggestions,
 .dark-mode .add-task {
@@ -42,12 +37,11 @@
 .dark-mode .navbar {
   border-bottom: 1px solid var(--light-gray);
 }
-/* Dark mode field labels */
+
 .dark-mode .add-task label {
   color: white;
 }
 
-/* Dark mode input fields */
 .dark-mode .add-task input,
 .dark-mode .add-task textarea {
   background-color: var(--dark-gray);
@@ -55,7 +49,6 @@
   border: 1px solid var(--medium-gray);
 }
 
-/* Dark mode smart suggestions inner box */
 .dark-mode .suggestion-box {
   background-color: var(--dark-gray);
   color: white;
@@ -65,7 +58,6 @@
   color: white;
 }
 
-/* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -74,7 +66,6 @@
   padding: 10px 20px;
 }
 
-/* Brand Section */
 .brand {
   display: flex;
   align-items: center;
@@ -84,13 +75,11 @@
   height: 40px;
 }
 
-/* Desktop Navigation buttons container */
 .nav-buttons {
   display: flex;
   align-items: center;
 }
 
-/* Icon button styles */
 .nav-btn.icon-btn {
   background: none;
   border: none;
@@ -102,7 +91,6 @@
   color: black;
 }
 
-/* Dark mode toggle container */
 .dark-mode-toggle {
   display: flex;
   align-items: center;
@@ -119,7 +107,6 @@
   color: white;
 }
 
-/* Logout button styled in red */
 .nav-btn.logout {
   background-color: #e74c3c;
   border: none;
@@ -131,20 +118,17 @@
   font-weight: bold;
 }
 
-/* Mobile Navigation (hidden in desktop) */
 .mobile-nav {
   display: none;
 }
 
-/* Main Container (desktop layout) */
 .main-container {
   display: flex;
   justify-content: space-between;
   padding: 1rem;
-  height: 90vh; /* 100% minus 10vh for navbar */
+  height: 90vh;
 }
 
-/* Calendar Section */
 .calendar-section {
   flex: 3;
   border-radius: 8px;
@@ -153,7 +137,6 @@
   height: 100%;
 }
 
-/* Side Panel */
 .side-panel {
   flex: 1;
   display: flex;
@@ -163,7 +146,6 @@
   height: 85vh;
 }
 
-/* Add Task Form */
 .add-task {
   background: var(--light-gray);
   padding: 0.5rem 1rem;
@@ -172,7 +154,6 @@
   overflow: hidden;
 }
 
-/* Row for deadline and duration fields */
 .task-details-row {
   display: flex;
   gap: 1rem;
@@ -198,7 +179,6 @@
   border-radius: 5px;
 }
 
-/* Add Task Button */
 .add-btn {
   background: var(--primary-color);
   color: white;
@@ -214,7 +194,6 @@
   background: var(--primary-hover);
 }
 
-/* Smart Suggestions */
 .smart-suggestions {
   background: var(--light-gray);
   padding: 0.8rem;
@@ -224,7 +203,6 @@
   font-size: 0.7rem;
 }
 
-/* Apply the new font to smart suggestions */
 .suggestion-box {
   background: white;
   padding: 1rem;
@@ -241,7 +219,6 @@
   align-items: center;
 }
 
-/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -263,7 +240,6 @@
   max-width: 500px;
 }
 
-/* Make the "Mark as done" text bold */
 .modal-status label {
   font-weight: bold;
 }
@@ -311,20 +287,17 @@
   background-color: black;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
-  /* Show mobile navigation and hide desktop navigation */
   .nav-buttons {
     display: none;
   }
-  
+
   .mobile-nav {
     display: flex;
     align-items: center;
     position: relative;
   }
-  
-  /* Hamburger button styles */
+
   .hamburger-btn {
     background: none;
     border: none;
@@ -332,12 +305,11 @@
     font-size: 1.8rem;
     color: black;
   }
-  
+
   .dark-mode .hamburger-btn {
     color: white;
   }
-  
-  /* Mobile menu dropdown styles */
+
   .mobile-menu {
     display: flex;
     flex-direction: column;
@@ -351,41 +323,39 @@
     z-index: 100;
     align-items: center;
   }
-  
+
   .mobile-menu .nav-btn {
     margin: 0.5rem 0;
   }
-  
+
   .add-task,
   .smart-suggestions {
     height: auto;
   }
-  
-  /* FIX: Set a fixed height for the calendar on mobile */
+
   .calendar-section {
-    flex : none;
+    flex: none;
     width: 100%;
     height: 75vh;
     margin-bottom: 1rem;
   }
-  
-  /* Adjust main container for mobile */
+
   .main-container {
     flex-direction: column;
     height: auto;
   }
-  
+
   .side-panel {
     height: auto;
   }
-  
+
   .calendar-section {
     margin-bottom: 1rem;
   }
 }
 
 .add-btn:disabled {
-  background-color: #ccc; /* Grey background */
-  cursor: not-allowed;    /* Change cursor to indicate it's disabled */
-  opacity: 0.8;           /* Optional: make it slightly faded */
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.8;
 }

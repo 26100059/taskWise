@@ -3,8 +3,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Task = require('../models/Task');
 const TimeSlot = require('../models/TimeSlot');
-const { getTimeSlotsByUserId, deleteTimeSlotsByUserId, createNewTimeSlots } = require('../dbFunctions'); // Import from dbFunctions.js
-const authenticateToken = require('../authMiddleware'); // Import the middleware for redux state
+const { getTimeSlotsByUserId, deleteTimeSlotsByUserId, createNewTimeSlots } = require('../dbFunctions');
+const authenticateToken = require('../authMiddleware');
 
 
 require('dotenv').config();
@@ -15,19 +15,15 @@ const MODEL_NAME = "deepseek-r1-distill-llama-70b";
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 
-// Function to extract JSON block from text content
 function extractJSON(content) {
   try {
-    // Look for content between JSON code blocks
     const jsonRegex = /```json\s*([\s\S]*?)\s*```/;
     const match = content.match(jsonRegex);
 
     if (match && match[1]) {
-      // Parse and stringify to validate and format the JSON
       const jsonData = JSON.parse(match[1]);
       return JSON.stringify(jsonData, null, 2);
     } else {
-      // If no code blocks found, try to find and parse JSON directly
       const possibleJSON = content.trim();
       const jsonData = JSON.parse(possibleJSON);
       return JSON.stringify(jsonData, null, 2);
@@ -37,7 +33,6 @@ function extractJSON(content) {
   }
 }
 
-// Function to generate LLM prompt
 const generatePrompt = (newTask, existingTimeSlots, info) => `
 You are an intelligent scheduling assistant. Your task is to schedule a new task into a user’s existing calendar while ensuring efficiency and avoiding conflicts. Follow the rules carefully and return only the updated schedule in a valid JSON format.
 
@@ -107,11 +102,8 @@ Return only a valid JSON array of time slots. Make sure previous timeslots remai
 
 async function replaceTimeSlots(newTimeSlots, userId, session) {
   try {
-    // Step 1: Delete all time slots associated with the taskId (or userId, as needed) within the session
-    // Assuming task_id is related to user_id, and you want to delete based on task_id
     const deletedCount = await deleteTimeSlotsByUserId(userId, session);
 
-    // Step 2: Ensure newTimeSlots is an array of objects
     if (typeof newTimeSlots === "string") {
       newTimeSlots = JSON.parse(newTimeSlots);
     }
@@ -120,9 +112,7 @@ async function replaceTimeSlots(newTimeSlots, userId, session) {
       throw new Error("Invalid or empty time slots data");
     }
 
-    // Step 3: Create new time slots for the user only
     const createdCount = await createNewTimeSlots(newTimeSlots, session);
-    // await createNewTimeSlots(newTimeSlots, session);
     if (deletedCount > createdCount) throw new Error("Model failed to generate valid response");
 
     console.log("Successfully replaced time slots.");
@@ -135,7 +125,6 @@ async function replaceTimeSlots(newTimeSlots, userId, session) {
 
 router.post('/schedule-task', authenticateToken, async (req, res) => {
 
-  //redux user id is available now
   const userId = req.user.userId;
 
   const session = await mongoose.startSession();
@@ -146,7 +135,6 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
       throw new Error("Missing required task fields");
     }
 
-    // Step 1: Create a new task with fixed user_id
     const newTask = new Task({
       user_id: new mongoose.Types.ObjectId(userId),
       task_name: name,
@@ -158,23 +146,19 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
 
     const taskId = newTask._id;
 
-    // Step 2: Fetch only timeslots of the user id
     const existingTimeSlots = await getTimeSlotsByUserId(userId);
 
-    // Format the fetched time slots back to the original format (only task_id as ObjectId)
     const formattedTimeSlots = existingTimeSlots.map((slot) => ({
       _id: slot._id,
-      task_id: slot.task_id._id,  // Only include task_id as ObjectId
+      task_id: slot.task_id._id,
       start_time: slot.start_time,
       end_time: slot.end_time,
     }));
 
     console.log(formattedTimeSlots);
 
-    // Step 3: Prepare input for LLM API
     const llmPrompt = generatePrompt(newTask, formattedTimeSlots, info);
 
-    // console.log("LLM API INPUT", llmPrompt);
 
     const llmResponse = await fetch(API_URL, {
       method: "POST",
@@ -190,25 +174,16 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
       })
     });
 
-    // Ensure response is in JSON format
     const llmJson = await llmResponse.json();
 
-    // Extract the raw content (text response from LLM)
     const llmOutput = llmJson.choices?.[0]?.message?.content || "";
 
-    // console.log("--line before llm out put--")
-    // console.log(llmOutput)
-
-    // Extract JSON from the response content
     const newTimeSlots = extractJSON(llmOutput);
 
-    // console.log("--line before new Time slots--")
     console.log(newTimeSlots);
 
-    // Step 4: Replace time slots within transaction
     await replaceTimeSlots(newTimeSlots, userId, session);
 
-    // // Step 7: Commit the transaction and return response
     await session.commitTransaction();
     session.endSession();
 

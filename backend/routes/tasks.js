@@ -3,10 +3,9 @@ const mongoose = require("mongoose");
 const Task = require("../models/Task");
 const TimeSlot = require("../models/TimeSlot");
 const router = express.Router();
-const authenticateToken = require('../authMiddleware'); // Import the middleware for redux state
+const authenticateToken = require('../authMiddleware');
 
 
-// GET /timeSlots - Fetch time slots (optionally filter by user_id)
 router.get("/timeSlots", authenticateToken, async (req, res) => {
   try {
 
@@ -25,7 +24,6 @@ router.get("/timeSlots", authenticateToken, async (req, res) => {
 });
 
 
-// PUT /timeSlots/:id - Update time slot when dragged and dropped
 router.put("/timeSlots/:id", async (req, res) => {
   const { id } = req.params;
   const { start_time, end_time } = req.body;
@@ -46,10 +44,9 @@ router.put("/timeSlots/:id", async (req, res) => {
 });
 
 
-// Updated code
 router.put("/mark-done/:id", async (req, res) => {
   const { id } = req.params;
-  const { status } = req.body; // expects "done" or "pending"
+  const { status } = req.body;
   try {
     const updatedTask = await Task.findByIdAndUpdate(
       id,
@@ -67,7 +64,6 @@ router.put("/mark-done/:id", async (req, res) => {
 });
 
 
-// (Optional) GET /tasks/tasksList - Fetch a list of tasks for the user
 router.get("/tasksList", async (req, res) => {
   try {
     const query = {};
