@@ -8,12 +8,12 @@ const deleteTimeSlotsByUserId = async (userId, session) => {
     const taskIds = tasks.map(task => task._id);
 
     if (taskIds.length === 0) {
-      console.log(`No tasks found for user ${userId}. No time slots to delete.`);
+
       return 0;
     }
 
     const deletedTimeSlots = await TimeSlot.deleteMany({ task_id: { $in: taskIds } }, { session });
-    console.log(`${deletedTimeSlots.deletedCount} time slots deleted for user ${userId}.`);
+
 
     return deletedTimeSlots.deletedCount || 0;
 
@@ -43,7 +43,7 @@ const createNewTimeSlots = async (newTimeSlots, session) => {
     });
 
     const result = await TimeSlot.insertMany(timeSlotsToInsert, { session });
-    console.log(`${result.length} time slot(s) created successfully.`);
+
 
     return result.length;
 

@@ -1,54 +1,10 @@
-// const express = require("express");
-// const cors = require("cors");
-// const app = express();
-// const connectToDatabase = require("./db/mongo");
-// require('dotenv').config();
-
-// app.use(cors());
-// app.use(express.json());
-
-// app.get("/", (req, res) => {
-//   res.send("Backend is running...");
-// });
-
-// // Mount testing routes if needed
-// app.use("/testingDB", require("./routes/testingDB"));
-
-// // Mount tasks routes
-// app.use("/api/tasks", require("./routes/tasks"));
-
-// // Mount scheduling routes
-// app.use("/api/scheduling", require("./routes/scheduling"));
-// app.use("/api/suggestions", require("./routes/suggestions"));
-
-// // Mount profile routes
-// app.use("/profilePage", require("./routes/profilePage"));
-
-// connectToDatabase()
-//   .then(() => {
-//     const PORT = process.env.PORT || 7000;
-//     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-//   })
-//   .catch(err => {
-//     console.error("Error connecting to the database:", err);
-//   });
-//   // module.exports = app;
-
-
-
+// ===== DEPLOYMENT CONFIGURATION =====
 
 const express = require("express");
 const cors = require("cors");
 const app = express();
 const connectToDatabase = require("./db/mongo");
 require("dotenv").config();
-
-// Configure CORS to allow requests only from your frontend
-// app.use(cors({
-//   origin: process.env.FRONTEND_URL || "https://taskwise-sigma.vercel.app",
-//   methods: ["GET", "POST", "PUT", "DELETE"],
-//   credentials: true // Only needed if you're sending cookies or auth headers
-// }));
 
 const allowedOrigins = [
   "https://taskwise-sigma.vercel.app",
@@ -57,7 +13,6 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -69,41 +24,53 @@ app.use(cors({
   credentials: true
 }));
 
-
-// require("dotenv").config();
-// console.log("Allowed frontend URL:", process.env.FRONTEND_URL);
-
-// app.use(cors());
-
-// app.get("/test-cors", (req, res) => {
-//   res.json({ origin: req.headers.origin });
-// });
-
-
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Backend is running...");
 });
 
-// Mount testing routes if needed
 app.use("/testingDB", require("./routes/testingDB"));
-
-// Mount tasks routes
 app.use("/api/tasks", require("./routes/tasks"));
-
-// Mount scheduling routes
 app.use("/api/scheduling", require("./routes/scheduling"));
 app.use("/api/suggestions", require("./routes/suggestions"));
-
-// Mount profile routes
 app.use("/profilePage", require("./routes/profilePage"));
 
 connectToDatabase()
   .then(() => {
     const PORT = process.env.PORT || 7000;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    app.listen(PORT);
   })
-  .catch(err => {
-    console.error("Error connecting to the database:", err);
+  .catch(() => {
   });
+
+
+
+// ===== LOCALHOST CONFIGURATION =====
+
+// const express = require("express");
+// const cors = require("cors");
+// const app = express();
+// const connectToDatabase = require("./db/mongo");
+// require('dotenv').config();
+
+// app.use(cors()); 
+// app.use(express.json());
+
+// app.get("/", (req, res) => {
+//   res.send("Backend is running (Localhost)...");
+// });
+
+// app.use("/testingDB", require("./routes/testingDB"));
+// app.use("/api/tasks", require("./routes/tasks"));
+// app.use("/api/scheduling", require("./routes/scheduling"));
+// app.use("/api/suggestions", require("./routes/suggestions"));
+// app.use("/profilePage", require("./routes/profilePage"));
+
+// connectToDatabase()
+//   .then(() => {
+//     const PORT = process.env.PORT || 7000;
+//     app.listen(PORT);
+//   })
+//   .catch(() => {
+//   });

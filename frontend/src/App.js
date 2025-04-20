@@ -10,12 +10,11 @@ import DashboardPage from "./pages/dashboard";
 import ProfilePage from "./pages/profilePage";
 import TestingDB from "./pages/TestingDB";
 
-console.log("🔹 App.js is being loaded!");
 
 const ProtectedRoute = ({ children }) => {
   const user = useSelector((state) => state.auth.user);
   if (!user) {
-    console.log("🔴 No user found, redirecting to Sign In...");
+
     return <Navigate to="/signin" replace />;
   }
   return children;
@@ -26,7 +25,7 @@ function App() {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    console.log("📂 LocalStorage User:", storedUser ? JSON.parse(storedUser) : "No user found");
+    
     if (storedUser) {
       dispatch(loginSuccess(JSON.parse(storedUser)));
     }

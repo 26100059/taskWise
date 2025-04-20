@@ -248,7 +248,7 @@ const DashboardPage = () => {
   }, [isDarkMode]);
 
   const handleLogout = () => {
-    console.log("🚪 Logging out...");
+
     dispatch(logout());
   };
 

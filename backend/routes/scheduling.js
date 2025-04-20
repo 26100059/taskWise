@@ -115,7 +115,7 @@ async function replaceTimeSlots(newTimeSlots, userId, session) {
     const createdCount = await createNewTimeSlots(newTimeSlots, session);
     if (deletedCount > createdCount) throw new Error("Model failed to generate valid response");
 
-    console.log("Successfully replaced time slots.");
+
   } catch (error) {
     console.error("Failed to replace time slots:", error.message);
     throw error;
@@ -155,7 +155,6 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
       end_time: slot.end_time,
     }));
 
-    console.log(formattedTimeSlots);
 
     const llmPrompt = generatePrompt(newTask, formattedTimeSlots, info);
 
@@ -180,7 +179,7 @@ router.post('/schedule-task', authenticateToken, async (req, res) => {
 
     const newTimeSlots = extractJSON(llmOutput);
 
-    console.log(newTimeSlots);
+
 
     await replaceTimeSlots(newTimeSlots, userId, session);
 

@@ -6,7 +6,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-console.log("🚀 index.js is running!");
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

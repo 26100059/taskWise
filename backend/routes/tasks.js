@@ -10,7 +10,6 @@ router.get("/timeSlots", authenticateToken, async (req, res) => {
   try {
 
     const userId = req.user.userId;
-    console.log("Yes we have USER ID IN TIMESLOTS available: ", userId);
 
     const query = {};
     if (userId) {

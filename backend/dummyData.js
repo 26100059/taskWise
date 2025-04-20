@@ -11,7 +11,7 @@ const uri = process.env.MONGO_URI;
 const connect = async () => {
   try {
     await mongoose.connect(uri);
-    console.log("Connected to MongoDB Atlas.");
+
   } catch (err) {
     console.error("MongoDB connection error:", err);
     process.exit(1);
@@ -32,9 +32,9 @@ const insertDummyData = async () => {
       updated_at: new Date("2025-03-18T13:02:09.441Z")
     });
     await user.save();
-    console.log("User created:", user);
+
   } else {
-    console.log("User already exists.");
+
   }
 
   await Task.deleteMany({ user_id: "67d96ed12fa6e5fb171af63f" });
@@ -87,7 +87,7 @@ const insertDummyData = async () => {
       taskIndex++;
     }
   }
-  console.log(`${tasksInserted.length} tasks (with timeslots) inserted for user 67d96ed12fa6e5fb171af63f.`);
+
 
   await UserProfileStats.deleteMany({ user_id: "67d96ed12fa6e5fb171af63f" });
   const profileStats = new UserProfileStats({
@@ -99,7 +99,7 @@ const insertDummyData = async () => {
     updated_at: new Date()
   });
   await profileStats.save();
-  console.log("Profile stats inserted for user:", profileStats);
+
 
   mongoose.connection.close();
 };
