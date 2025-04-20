@@ -152,6 +152,18 @@ body {
   color: var(--medium-gray);
   letter-spacing: 0.05em;
 }
+
+
+.main-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainPage-main-content {
+  flex: 1;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .mainPage-main-content {
