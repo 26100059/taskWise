@@ -185,13 +185,13 @@ body {
   .mainPage-content-container {
     flex: 1 1 auto;
     width: 100%;
-    margin: 1rem auto 0 auto; /* Center horizontally with small top margin */
+    margin: 3rem auto 0 auto; /* Center horizontally with small top margin */
     padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 90vh;
+    justify-content: flex-start;
+    min-height: 80vh;
     box-sizing: border-box;
   }
 
