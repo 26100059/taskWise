@@ -149,18 +149,8 @@ const DashboardPage = () => {
     }
   }, [token]);
 
-  useEffect(() => {
-    const fetchSuggestion = async () => {
-      try {
-        const response = await axios.get(`${API_BASE}/api/suggestions`);
-        setSuggestion(response.data.suggestion);
-      } catch (error) {
-        console.error("Error fetching suggestion:", error);
-      }
-    };
-    fetchSuggestion();
-  }, []);
 
+  ////5
   useEffect(() => {
     fetchTimeSlots();
   }, [fetchTimeSlots]);
