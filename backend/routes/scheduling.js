@@ -32,45 +32,43 @@ function extractJSON(content) {
     return `Error processing the file: ${error.message}`;
   }
 }
+
+
+
 const generatePrompt = (newTask, existingTimeSlots, info) => `
-You are a smart scheduling assistant. Given the current time, a new task (with an ID, duration, and deadline), and a list of already scheduled time slots, your job is to generate one or more **non-overlapping time slots** that:
-
-- Fully cover the task's required duration,
-- Start **after the current time**, and
-- Finish **before the task's deadline**.
+You are an intelligent scheduling assistant. Based on the current time, a new task (with ID, duration, and deadline), and a list of existing time slots, generate one or more **non-overlapping time slots** that fulfill the new task's exact duration **before the deadline** and **after the current time**.
 
 ---
 
-### Mandatory Rules (must **always** be followed):
+### Mandatory Rules (must **never** be violated):
 
-1. Do **not overlap** new slots with existing ones — unless absolutely necessary (see Dynamic Rescheduling).
-2. Time slots must **begin after the current_time** and **finish before the task’s deadline**.
-3. The **total time scheduled** must **exactly match the task's duration**.
-4. If the task is **longer than 3 hours**, split it into **two or more segments**.
-5. Only schedule time during **working hours**: **08:00–18:00**, **Pakistan Time (GMT+5)**.
-6. Maintain **at least a 30-minute break** between slots (ideally 1–2 hours).
-7. Limit **total scheduled time to 6 hours per day**.
-8. Aim for an **even workload distribution across the week** — avoid clustering tasks on one day.
-9. Output a **JSON array** that includes both the existing and newly scheduled time slots. Do not include any explanations or additional content.
-
----
-
-### Prioritization Rule:
-- If user preferences are provided in the \`info\` field (e.g., specific days or times), these preferences override standard rules like daily limits, breaks, or distribution.
+1. Time slots must **not overlap** with existing ones, unless absolutely unavoidable (see Dynamic Rescheduling).
+2. Time slots must **start after the current_time** and **end before the task's deadline**.
+3. The **total scheduled time** must **exactly match the task's duration** (e.g., a 4-hour task should result in exactly 4 hours of time slots combined).
+4. For any task **longer than 3 hours**, split it into **2 or more smaller time slots**.
+5. Schedule time slots **only within working hours**: **08:00–18:00**, **Pakistan time (GMT+5)**.
+6. There should be **at least a 30-minute break between any two time slots** (preferably 1–2 hours).
+7. Avoid scheduling more than **6 hours of total tasks on any single day**.
+8. Distribute workload **evenly across the week** — don't overload one day and leave others empty.
+9. Return a **JSON array including both existing and new time slots**. No explanation, no additional output.
 
 ---
 
-### Dynamic Rescheduling (Only if Absolutely Necessary)
-
-If it's impossible to fit the new task due to time conflicts, and the user has either provided permission (via the \`info\` field) or there are no available alternatives:
-
-- You may **reschedule existing time slots** to make room. This means moving them to new time slots that comply with all the same rules.
-- You **must still respect all mandatory rules**, including non-overlap, working hours, breaks, and even workload.
-- When rescheduling, ensure the **task ID and total duration** for existing tasks stay the same.
+### Prioritization Note:
+- If user preferences (e.g., specific days or hours) are provided in the \`info\` field, they must take precedence over predefined rules such as distribution, break time, or daily workload limits.
 
 ---
 
-### *User Input:*
+### Model Enhancement: Dynamic Rescheduling (Only if Absolutely Necessary)
+
+If the new task **cannot be scheduled** without conflict due to lack of space, and the user has implied permission (via info or if no options exist), you may:
+- **Dynamically reschedule existing time slots** that conflict with the new task. By Dynamic rescheduling I mean shifting the previous time slots to a new time slots to make space for the new task. Make sure that the new calendar does not schedule any task beyonds its deadline.
+- You **must still follow all mandatory rules** when rescheduling old tasks (no overlaps, respect working hours, 30-min breaks, ≤6hr/day, even distribution, etc).
+- When rescheduling existing slots, ensure their total time and task IDs remain unchanged.
+
+---
+
+### *User's Input:*
 \`\`\`json
 {
   "current_time": "${new Date().toISOString()}",
@@ -87,8 +85,7 @@ If it's impossible to fit the new task due to time conflicts, and the user has e
 ---
 
 ### Expected Output Format:
-
-Return only a valid JSON array of time slots, like so:
+Return only a valid JSON array of time slots, formatted like this:
 
 \`\`\`json
 [
@@ -100,13 +97,16 @@ Return only a valid JSON array of time slots, like so:
 ]
 \`\`\`
 
-Make sure to:
-- **Follow all rules strictly**.
-- **Match the total required duration** exactly.
-- **Respect breaks, working hours, and fair distribution**, unless user preferences override them.
-- Include **both the existing and newly added time slots**.
-- Output **only** the JSON array. No other text.
+Ensure:
+- **All rules are strictly followed**.
+- **Total duration matches exactly**.
+- **Breaks, working hours, and fair distribution are respected unless user preference overrides them**.
+- Include **all existing time slots along with newly added ones**.
+- Only output a JSON array. No extra text.
 `;
+
+
+
 
 
 
