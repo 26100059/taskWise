@@ -67,6 +67,10 @@ const ProfilePage = () => {
   const xp = cumulativeTime * 10;
 
 
+  const level = Math.floor(xp / 100) + 1;
+  const currentXP = xp % 100;
+  const progressPercent = currentXP;
+
   useEffect(() => {
     const fetchWeeklyTrend = async () => {
       if (userId) {
@@ -188,7 +192,24 @@ const ProfilePage = () => {
       className="profilePage-container"
       style={{ backgroundColor: isDarkMode ? "#000" : "var(--background-color)", color: isDarkMode ? "#fff" : "var(--text-color)" }}
     >
- 
+      <div className="profilePage-header-wrapper">
+        <div className="profilePage-header">
+          <div className="profilePage-user-name">
+            <h2>{userName}</h2>
+          </div>
+          <div className="profilePage-user-stats">
+            <div className="profilePage-level-display">
+              <div className='levelNumber'>Level: {level}</div>
+            </div>
+            <div className="profilePage-xp-container">
+              <div className="profilePage-xp-bar">
+                <ProgressBar percent={progressPercent} strokeWidth={5} strokeColor="#3b82f6" />
+              </div>
+              <div className="profilePage-xp-text">XP: {currentXP}/100</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="profilePage-productivity-analytics">
         <div className="profilePage-graphs-container">
