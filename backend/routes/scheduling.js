@@ -33,39 +33,42 @@ function extractJSON(content) {
   }
 }
 
+
+
 const generatePrompt = (newTask, existingTimeSlots, info) => `
-You are a smart scheduling assistant. Based on the current time, a new task (with ID, duration, and deadline), and existing time slots, generate one or more **non-overlapping time slots** that fit the task's **exact duration**, **before the deadline**, and **after the current time**.
+You are an intelligent scheduling assistant. Based on the current time, a new task (with ID, duration, and deadline), and a list of existing time slots, generate one or more **non-overlapping time slots** that fulfill the new task's exact duration **before the deadline** and **after the current time**.
 
 ---
 
-### Hard Rules (must always be followed):
+### Mandatory Rules (must **never** be violated):
 
-1. No overlapping with existing slots (unless dynamic rescheduling is allowed).
-2. Time slots must be within **08:00–18:00 Pakistan time (GMT+5)**.
-3. Start after \`current_time\`, end before \`deadline\`.
-4. Total scheduled time must **exactly match the task duration**.
-5. Split tasks **>3 hours** into **2+ parts**.
-6. Include **30+ min breaks** between time slots (preferably 1–2 hours).
-7. Limit **≤6 hours of tasks per day**.
-8. Spread tasks **evenly across the week**.
-9. Output only a **JSON array** with **existing + new slots** (no extra text).
-
----
-
-### Prioritization:
-If \`info\` includes user preferences (e.g., preferred times/days), **these override** other soft rules (like distribution, breaks, or daily caps).
+1. Time slots must **not overlap** with existing ones, unless absolutely unavoidable (see Dynamic Rescheduling).
+2. Time slots must **start after the current_time** and **end before the task's deadline**.
+3. The **total scheduled time** must **exactly match the task's duration** (e.g., a 4-hour task should result in exactly 4 hours of time slots combined).
+4. For any task **longer than 3 hours**, split it into **2 or more smaller time slots**.
+5. Schedule time slots **only within working hours**: **08:00–18:00**, **Pakistan time (GMT+5)**.
+6. There should be **at least a 30-minute break between any two time slots** (preferably 1–2 hours).
+7. Avoid scheduling more than **6 hours of total tasks on any single day**.
+8. Distribute workload **evenly across the week** — don't overload one day and leave others empty.
+9. Return a **JSON array including both existing and new time slots**. No explanation, no additional output.
 
 ---
 
-### Dynamic Rescheduling (Only if Needed):
-If no valid schedule is possible and user allows it:
-- Shift existing slots to make room.
-- Keep original task IDs and durations.
-- Still follow **all rules** when rescheduling.
+### Prioritization Note:
+- If user preferences (e.g., specific days or hours) are provided in the \`info\` field, they must take precedence over predefined rules such as distribution, break time, or daily workload limits.
 
 ---
 
-### Input:
+### Model Enhancement: Dynamic Rescheduling (Only if Absolutely Necessary)
+
+If the new task **cannot be scheduled** without conflict due to lack of space, and the user has implied permission (via info or if no options exist), you may:
+- **Dynamically reschedule existing time slots** that conflict with the new task. By Dynamic rescheduling I mean shifting the previous time slots to a new time slots to make space for the new task. Make sure that the new calendar does not schedule any task beyonds its deadline.
+- You **must still follow all mandatory rules** when rescheduling old tasks (no overlaps, respect working hours, 30-min breaks, ≤6hr/day, even distribution, etc).
+- When rescheduling existing slots, ensure their total time and task IDs remain unchanged.
+
+---
+
+### *User's Input:*
 \`\`\`json
 {
   "current_time": "${new Date().toISOString()}",
@@ -81,8 +84,9 @@ If no valid schedule is possible and user allows it:
 
 ---
 
-### Output:
-Return a JSON array like:
+### Expected Output Format:
+Return only a valid JSON array of time slots, formatted like this:
+
 \`\`\`json
 [
   {
@@ -93,8 +97,15 @@ Return a JSON array like:
 ]
 \`\`\`
 
-Only return the array. No explanations.
+Ensure:
+- **All rules are strictly followed**.
+- **Total duration matches exactly**.
+- **Breaks, working hours, and fair distribution are respected unless user preference overrides them**.
+- Include **all existing time slots along with newly added ones**.
+- Only output a JSON array. No extra text.
 `;
+
+
 
 
 
