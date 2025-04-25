@@ -85,8 +85,6 @@ const DashboardPage = () => {
 
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const [suggestion, setSuggestion] = useState("");
-
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [notification, setNotification] = useState(null);
@@ -148,17 +146,7 @@ const DashboardPage = () => {
       console.error("Error fetching time slots:", error);
     }
   }, [token]);
-  useEffect(() => {
-    const fetchSuggestion = async () => {
-      try {
-        const response = await axios.get(`${API_BASE}/api/suggestions`);
-        setSuggestion(response.data.suggestion);
-      } catch (error) {
-        console.error("Error fetching suggestion:", error);
-      }
-    };
-    fetchSuggestion();
-  }, []);
+
 
   useEffect(() => {
     fetchTimeSlots();
@@ -446,14 +434,7 @@ const DashboardPage = () => {
               </button>
             </form>
           </div>
-
-          {/* Smart Suggestions */}
-          <div className="smart-suggestions">
-            <h3>♡ Start your day with our productivity tip:</h3>
-            <div className="suggestion-box">
-              {suggestion || "Loading suggestion..."}
-            </div>
-          </div>
+                
         </div>
       </div>
 
